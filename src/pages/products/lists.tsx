@@ -67,7 +67,7 @@ const ProductsList = () => {
                 accessorKey: 'uom',
                 size: 100,
                 header: () => <p className="column-title">UOM</p>,
-                cell: ({ getValue }) => <span className="text-foreground">{getValue<number>()}</span>,
+                cell: ({ getValue }) => <span className="text-foreground">{getValue<string>()}</span>,
             },
         ],[]),
         refineCoreProps: {

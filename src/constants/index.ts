@@ -1,5 +1,3 @@
-import { Label } from "recharts";
-
 export const  CATEGORIES = [
     'Meat', 
     'Poultry', 

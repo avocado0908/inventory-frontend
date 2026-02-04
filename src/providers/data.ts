@@ -22,7 +22,7 @@ export const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 3,
-    name: "Chiken Smoked sliced",
+    name: "Chicken Smoked sliced",
     category: "Poultry",
     supplier: "Bidvest",
     pkg: 1,
