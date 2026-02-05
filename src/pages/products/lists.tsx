@@ -50,7 +50,7 @@ const ProductsList = () => {
             },
             {
                 id: 'supplier',
-                accessorKey: 'supplier',
+                accessorKey: 'supplier.name',
                 size: 100,
                 header: () => <p className="column-title">Supplier</p>,
                 cell: ({ getValue }) => <Badge variant="secondary">{getValue<string>()}</Badge>
@@ -64,7 +64,7 @@ const ProductsList = () => {
             },
             {
                 id: 'uom',
-                accessorKey: 'uom',
+                accessorKey: 'uom.name',
                 size: 100,
                 header: () => <p className="column-title">UOM</p>,
                 cell: ({ getValue }) => <span className="text-foreground">{getValue<string>()}</span>,
