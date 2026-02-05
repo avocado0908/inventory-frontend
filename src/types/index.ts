@@ -89,3 +89,15 @@ export type Category = {
   name: string;
   description: string;
 };
+
+export type Supplier = {
+  id: number;
+  name: string;
+  description: string;
+};
+
+export type Uom = {
+  id: number;
+  name: string;
+  description: string;
+};
