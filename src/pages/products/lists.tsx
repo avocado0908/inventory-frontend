@@ -5,12 +5,13 @@ import { ListView } from "@/components/refine-ui/views/list-view"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CATEGORY_OPTIONS } from "@/constants"
 import { Product } from "@/types"
+import { useList } from "@refinedev/core"
 import { useTable } from "@refinedev/react-table";
 import { ColumnDef } from "@tanstack/react-table"
 import {  Search } from "lucide-react"
 import { useMemo, useState } from "react"
+import type { Category } from "@/types";
 
 const ProductsList = () => {
     const [SearchQuery, setSearchQuery] = useState('');
@@ -84,6 +85,13 @@ const ProductsList = () => {
         }
     });
 
+    const { query: categoriesQuery } = useList<Category>({
+        resource: "categories",
+        pagination: { pageSize: 100 },
+    });
+
+const categories = categoriesQuery.data?.data ?? [];
+
   return (
     <ListView>
         <Breadcrumb />
@@ -107,21 +115,23 @@ const ProductsList = () => {
 
                 <div className="flex gap-2 w-full sm:w-auto">
                     <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                        <SelectTrigger className="">
-                            <SelectValue placeholder="Filter by category"/>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Filter by category" />
                         </SelectTrigger>
 
                         <SelectContent>
-                            <SelectItem value="all">
-                                All Categories
+                            <SelectItem value="all">All Categories</SelectItem>
+
+                            {categories.map((category) => (
+                            <SelectItem
+                                key={category.id}
+                                value={String(category.id)}
+                            >
+                                {category.name}
                             </SelectItem>
-                            {CATEGORY_OPTIONS.map(category => (
-                                <SelectItem key={category.value} value={category.value}>
-                                    {category.label}
-                                </SelectItem>
                             ))}
                         </SelectContent>
-                    </Select>
+                        </Select>
                     <CreateButton />
                 </div>
             </div>
