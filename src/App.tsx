@@ -13,7 +13,7 @@ import { useNotificationProvider } from "./components/refine-ui/notification/use
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import Dashboard from "./pages/dashboard";
 import { Box, Home } from "lucide-react";
-import { Layout } from "./components/refine-ui/layout/layout";
+import { Layout } from "./components/layout/layout";
 import ProductsList from "./pages/products/lists";
 import ProductsCreate from "./pages/products/create";
 import { dataProvider } from "./providers/data";

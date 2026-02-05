@@ -1,60 +1,41 @@
-import { Product } from "@/types";
-import { BaseRecord, DataProvider, GetListParams, GetListResponse } from "@refinedev/core";
+import { BACKEND_BASE_URL } from "@/constants";
+import { ListResponse } from "@/types";
+import {createDataProvider, CreateDataProviderOptions} from "@refinedev/rest";
 
-export const MOCK_PRODUCTS: Product[] = [
-  {
-    id: 1,
-    name: "Beef Brisket Point End",
-    category: "Meat",
-    supplier: "Bidvest",
-    pkg: 1,
-    uom: "kg",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    name: "Bacon Streaky-Gluten Free-Rindless-Bee Knees",
-    category: "Meat",
-    supplier: "Bidvest",
-    pkg: 1,
-    uom: "kg",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    name: "Chicken Smoked sliced",
-    category: "Poultry",
-    supplier: "Bidvest",
-    pkg: 1,
-    uom: "kg",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: 4,
-    name: "Crème Fraiche-Tatua",
-    category: "Dairy",
-    supplier: "Bidvest",
-    pkg: 500,
-    uom: "g",
-    createdAt: new Date().toISOString(),
-  },
-];
+const options: CreateDataProviderOptions = {
+  getList: {
+    getEndpoint: ({ resource }) => resource,
 
-export const dataProvider: DataProvider = {
-  getList: async <TData extends BaseRecord = BaseRecord>({ resource }: 
-    GetListParams): Promise<GetListResponse<TData>> => {
-      if(resource !== 'products') return { data: [] as TData[], total: 0};
+    buildQueryParams: async ({ resource, pagination, filters }) => {
+        const page = pagination?.currentPage ?? 1;
+        const pageSize = pagination?.pageSize ?? 10;
 
-      return {
-        data: MOCK_PRODUCTS as unknown as TData[],
-        total: MOCK_PRODUCTS.length,
-      }
+        const params: Record<string, string|number> = { page, limit: pageSize };
+
+        filters?.forEach((filter) => {
+          const field = "field" in filter ? filter.field : "";
+          const value = String(filter.value);
+
+          if (resource === "products") {
+          if (field === "category") params.category = value;
+          if (field === "name" || field === "barcode") params.search = value;
+        }
+        })
+        return params;
     },
 
-    getOne: async () => {throw new Error('This function is not present in mock')},
-    create: async () => {throw new Error('This function is not present in mock')},
-    update: async () => {throw new Error('This function is not present in mock')},
-    deleteOne: async () => {throw new Error('This function is not present in mock')},
+    mapResponse: async (response) => {
+      const payload: ListResponse = await response.json();
+      return payload.data ?? [];
+    },
 
-    getApiUrl: () => '',
+    getTotalCount: async (response) => {
+      const payload: ListResponse = await response.json();
+      return payload.pagination?.total ?? payload.data?.length ?? 0;
+    },
+  }
 }
+
+const { dataProvider } = createDataProvider(BACKEND_BASE_URL, options);
+
+export { dataProvider };

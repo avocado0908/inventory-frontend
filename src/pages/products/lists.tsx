@@ -34,7 +34,7 @@ const ProductsList = () => {
         columns: useMemo<ColumnDef<Product>[]>(() => [
             {   
                 id: 'category', 
-                accessorKey: 'category', 
+                accessorKey: 'category.name', 
                 size: 100 ,
                 header: () => <p className="column-title ml-2">Category</p>,
                 cell: ({ getValue }) => <Badge>{getValue<string>()}</Badge>
