@@ -64,7 +64,7 @@ const ProductsCreate = () => {
   const form = useForm<BaseRecord, HttpError, ProductFormValues>({
     resolver: zodResolver(productCreateSchema),
     refineCoreProps: {
-      resource: "Products",
+      resource: "products",
       action: "create",
     },
     defaultValues: {
@@ -308,7 +308,7 @@ const ProductsCreate = () => {
                 />
 
                 <Button type="submit" size="lg" disabled={isSubmitting}>
-                  {isSubmitting ? "Creating..." : "Create Subject"}
+                  {isSubmitting ? "Creating..." : "Create Product"}
                 </Button>
 
               </form>
