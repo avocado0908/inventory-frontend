@@ -1,13 +1,3 @@
-export type Product = {
-    id: number;
-    name: string;
-    category: string;
-    supplier: string;
-    pkg: number;
-    uom: string;
-    createdAt: string;
-};
-
 export type ListResponse<T = unknown> = {
   data?: T[];
   pagination?: {
@@ -87,17 +77,34 @@ export type User = {
 export type Category = {
   id: number;
   name: string;
-  description: string;
+  description?: string | null;
 };
 
 export type Supplier = {
   id: number;
   name: string;
-  description: string;
+  description?: string | null;
 };
 
 export type Uom = {
   id: number;
   name: string;
-  description: string;
+  description?: string | null;
+};
+
+export type Product = {
+  id: number;
+  name: string;
+  categoryId?: number | null;
+  supplierId?: number | null;
+  uomId?: number | null;
+  price?: number | null;
+  pkg: number;
+  barcode?: string | null;
+  description?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  category?: Category | null;
+  supplier?: Supplier | null;
+  uom?: Uom | null;
 };

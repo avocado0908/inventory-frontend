@@ -12,10 +12,11 @@ import { Toaster } from "./components/refine-ui/notification/toaster";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import Dashboard from "./pages/dashboard";
-import { Box, Home } from "lucide-react";
+import { Box, ChartBarStacked, Home } from "lucide-react";
 import { Layout } from "./components/layout/layout";
 import ProductsList from "./pages/products/lists";
 import ProductsCreate from "./pages/products/create";
+import CategoriesList from "./pages/categories/lists";
 import { dataProvider } from "./providers/data";
 
 function App() {
@@ -43,8 +44,16 @@ function App() {
                   name: 'products',
                   list: '/products',
                   create: '/products/create',
+
                   meta: { label: 'Products', icon: <Box />}
-                }
+                },
+                {
+                  name: 'categories',
+                  list: '/categories',
+                  create: '/categories/create',
+
+                  meta: { label: 'Categories', icon: <ChartBarStacked />}
+                },
               ]}
             >
 
@@ -59,7 +68,13 @@ function App() {
                   <Route path="products">
                     <Route index element={<ProductsList />} />
                     <Route path="create" element={<ProductsCreate />} />
+                    
                   </Route>
+                  <Route path="categories">
+                    <Route index element={<CategoriesList />} />
+                    
+                  </Route>
+                  
                 </Route>  
               </Routes>
 

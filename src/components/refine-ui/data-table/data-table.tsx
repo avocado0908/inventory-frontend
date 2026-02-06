@@ -88,6 +88,10 @@ export function DataTable<TData extends BaseRecord>({
                 {headerGroup.headers.map((header) => {
                   const isPlaceholder = header.isPlaceholder;
 
+                  const align =
+                    (header.column.columnDef.meta as { align?: "center" })?.align ??
+                    "left";
+
                   return (
                     <TableHead
                       key={header.id}
@@ -97,9 +101,17 @@ export function DataTable<TData extends BaseRecord>({
                           isOverflowing: isOverflowing,
                         }),
                       }}
+                      className={cn(align === "center" && "text-center")}
                     >
                       {isPlaceholder ? null : (
-                        <div className={cn("flex", "items-center", "gap-1")}>
+                        <div
+                          className={cn(
+                            "flex",
+                            "items-center",
+                            "gap-1",
+                            align === "center" && "justify-center"
+                          )}
+                        >
                           {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
@@ -167,6 +179,10 @@ export function DataTable<TData extends BaseRecord>({
                     data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => {
+                      const align =
+                        (cell.column.columnDef.meta as { align?: "center" })?.align ??
+                        "left";
+
                       return (
                         <TableCell
                           key={cell.id}
@@ -176,8 +192,14 @@ export function DataTable<TData extends BaseRecord>({
                               isOverflowing: isOverflowing,
                             }),
                           }}
+                          className={cn(align === "center" && "text-center")}
                         >
-                          <div className="truncate">
+                          <div
+                            className={cn(
+                              "truncate",
+                              align === "center" && "mx-auto"
+                            )}
+                          >
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
