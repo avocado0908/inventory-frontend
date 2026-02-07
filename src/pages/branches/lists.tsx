@@ -28,7 +28,7 @@ export default function BranchList() {
         <h1 className="page-title">Branch List</h1>
   
             <div className="intro-row">
-              <p>Manage your brance here.</p>
+              <p>Manage your branch here.</p>
   
               <div className="actions-row">
                 <div className="search-field">

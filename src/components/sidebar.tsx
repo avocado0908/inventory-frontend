@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 
 const GENERAL_TITLES = new Set(["home", "stock count"]);
-const MANAGE_TITLES = new Set(["products", "categories", "suppliers"]);
+const MANAGE_TITLES = new Set(["products", "categories", "suppliers", "branches"]);
 
 export function Sidebar() {
   const { menuItems } = useMenu();
