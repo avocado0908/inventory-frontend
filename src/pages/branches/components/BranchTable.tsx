@@ -2,17 +2,17 @@ import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTable } from "@refinedev/react-table";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
-import type { Category } from "@/types";
+import type { Branch } from "@/types";
 import { DataTableRowActions } from "../../../components/table-row-action";
 
 
-type CategoriesTable = {
-  onEdit: (category: Category) => void;
+type BranchTable = {
+  onEdit: (branch: Branch) => void;
   filters?: any[];
 };
 
-export function CategoriesTable({ onEdit, filters = [] }: CategoriesTable) {
-  const categoryColumns = useMemo<ColumnDef<Category>[]>(
+export function BranchTable({ onEdit, filters = [] }: BranchTable) {
+  const branchColumns = useMemo<ColumnDef<Branch>[]>(
     () => [
       {
         id: "name",
@@ -31,7 +31,7 @@ export function CategoriesTable({ onEdit, filters = [] }: CategoriesTable) {
         cell: ({ row }) => (
           <DataTableRowActions
             record={row.original}
-            resource="categories"
+            resource="branches"
             onEdit={onEdit} 
           />
         ),
@@ -40,15 +40,15 @@ export function CategoriesTable({ onEdit, filters = [] }: CategoriesTable) {
     [onEdit]
   );
 
-  const categoryTable = useTable<Category>({
-    columns: categoryColumns,
+  const branchTable = useTable<Branch>({
+    columns: branchColumns,
     refineCoreProps: {
-      resource: "categories",
+      resource: "branches",
       pagination: { pageSize: 10, mode: "server" },
       filters: { permanent: filters },
       sorters: { initial: [{ field: "id", order: "desc" }] },
     },
   });
 
-  return <DataTable table={categoryTable} />;
+  return <DataTable table={branchTable} />;
 }

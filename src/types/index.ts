@@ -83,7 +83,9 @@ export type Category = {
 export type Supplier = {
   id: number;
   name: string;
-  description?: string | null;
+  contactName?: string | null;
+  email?: string | null;
+  phone?: string | null;
 };
 
 export type Uom = {
@@ -107,4 +109,18 @@ export type Product = {
   category?: Category | null;
   supplier?: Supplier | null;
   uom?: Uom | null;
+};
+
+export type Branch = {
+  id: number;
+  name: string;
+};
+
+export type MonthlyInventory = {
+  id: number;
+  productId: number;
+  branchId: number;
+  month: string;
+  quantity: number;
+  stockValue?: string | number | null;
 };

@@ -20,8 +20,7 @@ export default function CategoriesList() {
                   operator: "contains" as const,
                   value: searchQuery,
               },
-          ]
-        : [];
+          ]: [];
         
 
   return (
@@ -47,7 +46,6 @@ export default function CategoriesList() {
               <div className="flex gap-2 w-full sm:w-auto">
                 <CategoriesAddButton />
               </div>
-
             </div>
           </div>
 

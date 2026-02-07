@@ -1,0 +1,37 @@
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { EditForm } from "@/components/editForm";
+import type { Branch } from "@/types";
+
+type BranchEditDialogProps = {
+  editOpen: boolean;
+  setEditOpen: (open: boolean) => void;
+  selectedBranch: Branch | null;
+};
+
+export function BranchEditDialog({
+  editOpen,
+  setEditOpen,
+  selectedBranch,
+}: BranchEditDialogProps) {
+  return (
+    <Dialog open={editOpen} onOpenChange={setEditOpen}>
+      <DialogContent className='sm:max-w-lg'>
+        <DialogHeader className='text-start'>
+          <DialogTitle>Edit Branch</DialogTitle>
+          <DialogDescription>
+            Update the branch here. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        
+        {selectedBranch && (
+          <EditForm
+            resource="branches"
+            record={{ id: selectedBranch.id, name: selectedBranch.name }}
+            label="Branch Name"
+            onClose={() => setEditOpen(false)}
+          />
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+}
