@@ -32,6 +32,7 @@ export const productCreateSchema = z.object({
   supplierId: z.coerce.number().min(1, "Supplier is required"),
   name: z.string().min(2, "Product name must be at least 2 characters"),
   price: z.coerce.number().min(1, "Price must be $1 or more"),
+  barcode: z.string().optional(),
   pkg: z.coerce.number().int().min(1, "PKG must be at least 1"),
   uomId: z.coerce.number().min(1, "UOM is required"),
   description: z.string().optional(),
@@ -50,6 +51,7 @@ const ProductsCreate = () => {
       supplierId: 0,
       name: "",
       price: 0,
+      barcode: "",
       pkg: 0,
       uomId: 0,
       description: "",
@@ -195,6 +197,17 @@ const ProductsCreate = () => {
                       <FormLabel>Price <span className="text-orange-600">*</span></FormLabel>
                       <FormControl>
                         <Input type="number" step="0.01" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Barcode */}
+                <FormField control={form.control} name="barcode" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Barcode</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

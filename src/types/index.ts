@@ -124,3 +124,12 @@ export type MonthlyInventory = {
   quantity: number;
   stockValue?: string | number | null;
 };
+
+export type BranchAssignments = {
+  id: number;
+  name: string;
+  branchId: number;
+  assignedMonth: string;
+  createdAt?: string;
+  updatedAt?: string;
+};

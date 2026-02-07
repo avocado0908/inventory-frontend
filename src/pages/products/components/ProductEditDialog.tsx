@@ -51,6 +51,7 @@ export function ProductEditDialog({
       categoryId: 0,
       supplierId: 0,
       price: 0,
+      barcode: "",
       pkg: 0,
       uomId: 0,
       description: "",
@@ -73,6 +74,7 @@ export function ProductEditDialog({
       supplierId: selectedProduct.supplier?.id ?? selectedProduct.supplierId ?? 0,
       uomId: selectedProduct.uom?.id ?? selectedProduct.uomId ?? 0,
       price: selectedProduct.price ?? 0,
+      barcode: selectedProduct.barcode ?? "",
       pkg: selectedProduct.pkg ?? 1,
       description: selectedProduct.description ?? "",
     });
@@ -194,6 +196,19 @@ return (
                         <FormLabel>Price <span className="text-orange-600">*</span></FormLabel>
                         <FormControl>
                           <Input type="number" step="0.01" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name="barcode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Barcode</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

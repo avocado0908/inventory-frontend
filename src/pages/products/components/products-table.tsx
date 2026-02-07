@@ -55,6 +55,18 @@ export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
                 ),
             },
             {
+                id: "barcode",
+                accessorKey: "barcode",
+                size: 140,
+                meta: { align: "center" },
+                header: () => <p className="column-title text-center">Barcode</p>,
+                cell: ({ getValue }) => (
+                  <span className="text-foreground text-center block">
+                    {getValue<string | null | undefined>() || "—"}
+                  </span>
+                ),
+            },
+            {
                 id: "supplier",
                 accessorKey: "supplier.name",
                 size: 100,
