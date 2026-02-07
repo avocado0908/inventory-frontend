@@ -12,12 +12,15 @@ import { Toaster } from "./components/refine-ui/notification/toaster";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import Dashboard from "./pages/dashboard";
-import { Box, ChartBarStacked, Home } from "lucide-react";
+import { Box, ChartBarStacked, Home, Truck, Warehouse } from "lucide-react";
 import { Layout } from "./components/layout/layout";
 import ProductsList from "./pages/products/lists";
 import ProductsCreate from "./pages/products/create";
 import CategoriesList from "./pages/categories/lists";
+import StockCountPage from "./pages/stockcount";
 import { dataProvider } from "./providers/data";
+import SuppliersList from "./pages/suppliers/lists";
+import BranchesList from "./pages/branches/lists";
 
 function App() {
   return (
@@ -41,19 +44,32 @@ function App() {
                   meta: { label: 'Home', icon: <Home /> }
                 },
                 {
+                  name: 'stockcount',
+                  list: '/stockcount',
+                  meta: { label: 'Stock Count', icon: <ChartBarStacked /> }
+                },
+                {
                   name: 'products',
                   list: '/products',
                   create: '/products/create',
-
                   meta: { label: 'Products', icon: <Box />}
                 },
                 {
                   name: 'categories',
                   list: '/categories',
-                  create: '/categories/create',
-
                   meta: { label: 'Categories', icon: <ChartBarStacked />}
                 },
+                {
+                  name: 'suppliers',
+                  list: '/suppliers',
+                  meta: { label: 'Suppliers', icon: <Truck />}
+                },
+                {
+                  name: 'branches',
+                  list: '/branches',
+                  meta: { label: 'Branches', icon: <Warehouse />}
+                },
+                
               ]}
             >
 
@@ -65,6 +81,10 @@ function App() {
                   }>
                   <Route path="/" element={<Dashboard />} />
 
+                  <Route path="stockcount">
+                    <Route index element={<StockCountPage />} />
+                  </Route>
+
                   <Route path="products">
                     <Route index element={<ProductsList />} />
                     <Route path="create" element={<ProductsCreate />} />
@@ -72,7 +92,14 @@ function App() {
                   </Route>
                   <Route path="categories">
                     <Route index element={<CategoriesList />} />
-                    
+                  </Route>
+
+                  <Route path="suppliers">
+                    <Route index element={<SuppliersList />} />
+                  </Route>
+                  
+                  <Route path="branches">
+                    <Route index element={<BranchesList />} />
                   </Route>
                   
                 </Route>  

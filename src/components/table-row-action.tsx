@@ -1,7 +1,6 @@
 import { Pencil, Trash } from "lucide-react";
 import { EditButton } from "@/components/refine-ui/buttons/edit";
 import { DeleteButton } from "@/components/refine-ui/buttons/delete";
-import { Button } from "@/components/ui/button";
 
 type DataTableRowActionsProps<T> = {
   record: T;

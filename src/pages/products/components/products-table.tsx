@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useTable } from "@refinedev/react-table";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
 import type { Product } from "@/types";
-import { DataTableRowActions } from "../../categories/components/table-row-action";
+import { DataTableRowActions } from "../../../components/table-row-action";
 import { Badge } from "@/components/ui/badge";
 
 
