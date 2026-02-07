@@ -21,6 +21,7 @@ import StockCountPage from "./pages/stockcount";
 import { dataProvider } from "./providers/data";
 import SuppliersList from "./pages/suppliers/lists";
 import BranchesList from "./pages/branches/lists";
+import BranchAssingment from "./pages/branchAssingment/lists";
 
 function App() {
   return (
@@ -69,6 +70,12 @@ function App() {
                   list: '/branches',
                   meta: { label: 'Branches', icon: <Warehouse />}
                 },
+                {
+                  name: 'branchAssingment',
+                  list: '/branchAssingment',
+                  meta: { label: 'BranchAssingment', icon: <Warehouse />}
+                },
+                
                 
               ]}
             >
@@ -100,6 +107,9 @@ function App() {
                   
                   <Route path="branches">
                     <Route index element={<BranchesList />} />
+                  </Route>
+                  <Route path="branchAssingment">
+                    <Route index element={<BranchAssingment />} />
                   </Route>
                   
                 </Route>  

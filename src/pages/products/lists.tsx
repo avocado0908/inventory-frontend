@@ -73,7 +73,7 @@ const ProductsList = () => {
                         <Search className="search-icon" />
                         <Input
                             type="text"
-                            placeholder="Search by name..."
+                            placeholder="Search by name or barcode..."
                             className="pl-10 w-full"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
