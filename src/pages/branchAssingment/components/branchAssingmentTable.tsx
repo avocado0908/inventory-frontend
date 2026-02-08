@@ -35,6 +35,13 @@ export function BranchAssingmentTable({ onEdit, filters = [] }: BranchAssignment
         filterFn: "includesString",
       },
       {
+        id:"status",
+        accessorKey:'status',
+        size: 120,
+        header: () => <p className="column-title">Status</p>,
+        cell: ({ getValue }) => <span className="text-foreground">{getValue<string>()}</span>,
+      },
+      {
         id: "branchId",
         accessorKey: "branchId",
         size: 160,

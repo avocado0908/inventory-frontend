@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { BranchTable } from "./components/BranchTable";
 import { BranchAddButton } from "./components/BranchAddButton";
+import { BranchEditDialog } from "./components/BranchEditDialog";
 
 export default function BranchList() {
   const [editOpen, setEditOpen] = useState(false);
@@ -54,6 +55,12 @@ export default function BranchList() {
                 setSelectedBranch(branch);
                 setEditOpen(true);
               }}
+            />
+
+            <BranchEditDialog
+              editOpen={editOpen}
+              setEditOpen={setEditOpen}
+              selectedBranch={selectedBranch}
             />
   
             

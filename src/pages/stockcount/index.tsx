@@ -1,43 +1,32 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { useList } from "@refinedev/core";
-import { ListView } from "@/components/refine-ui/views/list-view";
-import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Product, Branch, MonthlyInventory } from "@/types";
-import { Link } from "react-router";
-import { Search, ScanLine } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Product, Branch, BranchAssignments, MonthlyInventory } from "@/types";
+import { Database, Layers, Table } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { BACKEND_BASE_URL } from "@/constants";
 
 type StockCountFormState = {
   product: Product;
   quantity: string;
 };
 
-function normalizeMonth(input: string) {
-  if (!input) return "";
-  if (/^\d{4}-\d{2}$/.test(input)) return `${input}-01`;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
-  return "";
-}
-
 export default function StockCountPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [barcode, setBarcode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [countDialogOpen, setCountDialogOpen] = useState(false);
-  const [selectionOpen, setSelectionOpen] = useState(false);
   const [countState, setCountState] = useState<StockCountFormState | null>(null);
   const [counts, setCounts] = useState<Record<number, number>>({});
-  const [months, setMonths] = useState<string[]>([]);
 
-  const barcodeRef = useRef<HTMLInputElement>(null);
   const countInputRef = useRef<HTMLInputElement>(null);
 
-  const params = new URLSearchParams(window.location.search);
-  const branchIdParam = params.get("branchId") ?? "";
-  const monthParam = params.get("month") ?? "";
-  const month = normalizeMonth(monthParam);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const branchAssignmentsIdParam = params.get("branchAssignmentsId") ?? "";
 
   const { query: productsQuery } = useList<Product>({
     resource: "products",
@@ -48,41 +37,66 @@ export default function StockCountPage() {
     resource: "branches",
     pagination: { pageSize: 1000 },
   });
+  const { query: assignmentsQuery } = useList<BranchAssignments>({
+    resource: "branch-assignments",
+    pagination: { pageSize: 1000 },
+  });
+
+  const selectedAssignment = useMemo(
+    () =>
+      assignmentsQuery.data?.data?.find(
+        (a) => String(a.id) === String(branchAssignmentsIdParam)
+      ),
+    [branchAssignmentsIdParam, assignmentsQuery.data?.data]
+  );
+
+  const effectiveAssignmentId =
+    branchAssignmentsIdParam ||
+    (selectedAssignment?.id ? String(selectedAssignment.id) : "");
 
   const branch = useMemo(
-    () => branchQuery.data?.data?.find((b) => String(b.id) === String(branchIdParam)),
-    [branchIdParam, branchQuery.data?.data]
+    () =>
+      branchQuery.data?.data?.find(
+        (b) => String(b.id) === String(selectedAssignment?.branchId ?? "")
+      ),
+    [selectedAssignment?.branchId, branchQuery.data?.data]
   );
 
   const products = productsQuery.data?.data ?? [];
+  const assignments = assignmentsQuery.data?.data ?? [];
 
   useEffect(() => {
-    if (!branchIdParam || !month) return;
-    fetch(`/api/stockcount?branchId=${branchIdParam}&month=${month}`)
+    if (!effectiveAssignmentId) {
+      setCounts({});
+      return;
+    }
+    fetch(`${BACKEND_BASE_URL}/monthly-inventory`)
       .then((res) => res.json())
       .then((data: { data?: MonthlyInventory[] }) => {
+        const assignmentId = Number(effectiveAssignmentId);
         const map: Record<number, number> = {};
-        (data.data ?? []).forEach((row) => {
-          map[row.productId] = row.quantity;
-        });
+        (data.data ?? [])
+          .filter(
+            (row) =>
+              Number(
+                (row as unknown as { branchAssignmentsId?: number; branchAssignmentId?: number })
+                  .branchAssignmentsId ??
+                  (row as unknown as { branchAssignmentId?: number }).branchAssignmentId
+              ) === assignmentId
+          )
+          .forEach((row) => {
+            const pid = Number(row.productId);
+            if (!Number.isNaN(pid)) {
+              map[pid] = row.quantity;
+            }
+          });
         setCounts(map);
       })
       .catch(() => {
         setError("Failed to load stock counts.");
       });
-  }, [branchIdParam, month]);
+  }, [effectiveAssignmentId]);
 
-  useEffect(() => {
-    if (!branchIdParam) return;
-    fetch(`/api/stockcount/months?branchId=${branchIdParam}`)
-      .then((res) => res.json())
-      .then((data: { data?: { month: string }[] }) => {
-        setMonths((data.data ?? []).map((row) => row.month));
-      })
-      .catch(() => {
-        setMonths([]);
-      });
-  }, [branchIdParam]);
 
   useEffect(() => {
     if (countDialogOpen) {
@@ -99,189 +113,136 @@ export default function StockCountPage() {
     setError(null);
   };
 
-  const handleBarcodeSubmit = () => {
-    const code = barcode.trim();
-    if (!code) return;
-    const product = products.find((p) => p.barcode === code);
-    if (!product) {
-      setError("Product not found for this location.");
-      return;
-    }
-    openCountDialog(product);
-  };
-
-  const handleSearchSubmit = () => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return;
-    const matches = products.filter((p) => p.name.toLowerCase().includes(q));
-    if (matches.length === 0) {
-      setError("Product not found for this location.");
-      return;
-    }
-    if (matches.length === 1) {
-      openCountDialog(matches[0]);
-      return;
-    }
-    setSelectionOpen(true);
-  };
-
   const saveCount = async () => {
-    if (!countState || !branchIdParam || !month) return;
+    if (!countState || !effectiveAssignmentId) return;
     const quantity = Number(countState.quantity);
     if (Number.isNaN(quantity) || quantity < 0) {
       setError("Enter a valid numeric count.");
       return;
     }
 
-    await fetch("/api/stockcount", {
+    const res = await fetch(`${BACKEND_BASE_URL}/monthly-inventory`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        branchId: Number(branchIdParam),
+        branchAssignmentsId: Number(effectiveAssignmentId),
         productId: countState.product.id,
-        month,
         quantity,
       }),
     });
 
+    if (!res.ok) {
+      const msg = await res.json().catch(() => null);
+      setError(msg?.error ?? "Failed to save count.");
+      return;
+    }
+
     setCounts((prev) => ({ ...prev, [countState.product.id]: quantity }));
     setCountDialogOpen(false);
     setCountState(null);
-    setBarcode("");
-    setSearchQuery("");
-    setTimeout(() => barcodeRef.current?.focus(), 50);
   };
 
   return (
-    <ListView>
-      <Breadcrumb />
-      <h1 className="page-title">Stock Count</h1>
+    <div className="h-screen w-full bg-[#f7f7f5] text-foreground">
+      <div className="flex h-full">
+        {/* Left panel */}
+        <section className="w-72 border-r bg-white">
+          <div className="border-b p-4">
+            <div className="text-xl font-semibold">Stock Counts</div>
+            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+              <Database className="h-3 w-3" /> assignments
+            </div>
+          </div>
 
-      <div className="intro-row">
-        <p>
-          Location: <strong>{branch?.name ?? "Unknown"}</strong> • Month:{" "}
-          <strong>{monthParam || "Unknown"}</strong>
-        </p>
-      </div>
+          <div className="p-4">
+            <div className="rounded-md border bg-white p-2">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Layers className="h-4 w-4" /> Assignment list
+              </div>
+            </div>
+          </div>
 
-      <div className="flex gap-6">
-        <aside className="w-64 shrink-0 rounded-md border bg-background p-4">
-          <h2 className="text-sm font-semibold">Stock Count Lists</h2>
-          <div className="mt-3 space-y-2">
-            {months.length === 0 && (
-              <p className="text-xs text-muted-foreground">No previous counts.</p>
-            )}
-            {months.map((m) => {
-              const label = m.slice(0, 7);
-              const isActive = monthParam.startsWith(label);
-              return (
-                <Link
-                  key={m}
-                  to={`/stockcount?branchId=${branchIdParam}&month=${label}`}
-                  className={`block rounded-md px-3 py-2 text-sm ${
-                    isActive ? "bg-muted font-medium" : "hover:bg-muted"
-                  }`}
+          <ScrollArea className="h-[calc(100%-140px)] px-2 pb-4">
+            <div className="space-y-1">
+              {assignments.map((assignment) => (
+                <button
+                  key={assignment.id}
+                  type="button"
+                  className={cn(
+                    "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm",
+                    effectiveAssignmentId === String(assignment.id)
+                      ? "bg-muted font-medium"
+                      : "text-muted-foreground hover:bg-muted"
+                  )}
+                  onClick={() =>
+                    navigate(`/stockcount?branchAssignmentsId=${assignment.id}`)
+                  }
                 >
-                  {label}
-                </Link>
-              );
-            })}
-          </div>
-        </aside>
-
-        <div className="flex-1">
-          <div className="actions-row">
-            <div className="search-field">
-              <ScanLine className="search-icon" />
-              <Input
-                ref={barcodeRef}
-                type="text"
-                placeholder="Scan barcode..."
-                className="pl-10 w-full"
-                value={barcode}
-                onChange={(e) => setBarcode(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleBarcodeSubmit()}
-              />
-              <Button type="button" onClick={handleBarcodeSubmit}>
-                Scan
-              </Button>
+                  <Table className="h-4 w-4" />
+                  {assignment.name}
+                </button>
+              ))}
             </div>
-            <div className="search-field">
-              <Search className="search-icon" />
-              <Input
-                type="text"
-                placeholder="Search product..."
-                className="pl-10 w-full"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
-              />
-              <Button type="button" onClick={handleSearchSubmit}>
-                Search
-              </Button>
+          </ScrollArea>
+        </section>
+
+        {/* Main content */}
+        <main className="flex-1 bg-white">
+          <div className="flex items-center justify-between border-b px-6 py-4">
+            <div className="text-sm font-medium">
+              {selectedAssignment
+                ? `${branch?.name ?? "Unknown"} • ${
+                    selectedAssignment?.assignedMonth?.slice(0, 7) || "Unknown"
+                  }`
+                : "Select a branch assignment"}
             </div>
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="px-6 pt-4 text-sm text-red-600">{error}</p>}
 
-          <div className="mt-4 rounded-md border">
-            <div className="grid grid-cols-7 gap-2 p-3 text-sm font-medium">
-              <span>Category</span>
-              <span>Product</span>
-              <span>Price</span>
-              <span>Supplier</span>
-              <span>Pkg</span>
-              <span>UOM</span>
-              <span>Count</span>
-            </div>
-            <div className="divide-y">
-              {products.map((p) => (
-                <div key={p.id} className="grid grid-cols-7 gap-2 p-3 text-sm">
-                  <span>{p.category?.name ?? "—"}</span>
-                  <span>{p.name}</span>
-                  <span>{p.price ? `$${p.price}` : "—"}</span>
-                  <span>{p.supplier?.name ?? "—"}</span>
-                  <span>{p.pkg}</span>
-                  <span>{p.uom?.name ?? "—"}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="min-w-10 text-right">
-                      {counts[p.id] ?? "—"}
-                    </span>
-                    <Button size="sm" variant="outline" onClick={() => openCountDialog(p)}>
-                      Count
-                    </Button>
+          {selectedAssignment ? (
+            <div className="px-6 py-4">
+              <div className="grid grid-cols-7 gap-2 border-b pb-2 text-xs font-semibold uppercase text-muted-foreground">
+                <div>Category</div>
+                <div>Product</div>
+                <div>Price</div>
+                <div>Supplier</div>
+                <div>Pkg</div>
+                <div>UOM</div>
+                <div>Count</div>
+              </div>
+              <div className="divide-y">
+                {products.map((p) => (
+                  <div key={p.id} className="grid grid-cols-7 gap-2 py-2 text-sm">
+                    <div>{p.category?.name ?? "—"}</div>
+                    <div>{p.name}</div>
+                    <div>{p.price ? `$${p.price}` : "—"}</div>
+                    <div>{p.supplier?.name ?? "—"}</div>
+                    <div>{p.pkg}</div>
+                    <div>{p.uom?.name ?? "—"}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="min-w-10 text-right">
+                        {counts[p.id] ?? "—"}
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openCountDialog(p)}
+                      >
+                        Count
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
+          ) : (
+            <div className="flex h-[calc(100%-64px)] items-center justify-center text-sm text-muted-foreground">
+              Choose a branch assignment to start counting.
+            </div>
+          )}
+        </main>
       </div>
-
-      <Dialog open={selectionOpen} onOpenChange={setSelectionOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Select Product</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-2">
-            {products
-              .filter((p) => p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
-              .map((p) => (
-                <Button
-                  key={p.id}
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={() => {
-                    setSelectionOpen(false);
-                    openCountDialog(p);
-                  }}
-                >
-                  {p.name}
-                </Button>
-              ))}
-          </div>
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={countDialogOpen} onOpenChange={setCountDialogOpen}>
         <DialogContent className="max-w-md">
@@ -298,7 +259,7 @@ export default function StockCountPage() {
                   Location: <strong>{branch?.name ?? "Unknown"}</strong>
                 </div>
                 <div>
-                  Month: <strong>{monthParam || "Unknown"}</strong>
+                  Month: <strong>{selectedAssignment?.assignedMonth?.slice(0, 7) || "Unknown"}</strong>
                 </div>
               </div>
               <Input
@@ -322,6 +283,6 @@ export default function StockCountPage() {
           )}
         </DialogContent>
       </Dialog>
-    </ListView>
+    </div>
   );
 }

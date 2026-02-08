@@ -119,10 +119,10 @@ export type Branch = {
 export type MonthlyInventory = {
   id: number;
   productId: number;
-  branchId: number;
-  month: string;
+  branchAssignmentsId: number;
   quantity: number;
   stockValue?: string | number | null;
+  updatedAt?: string;
 };
 
 export type BranchAssignments = {
@@ -130,6 +130,7 @@ export type BranchAssignments = {
   name: string;
   branchId: number;
   assignedMonth: string;
-  createdAt?: string;
+  status: string;
+  assignedAt?: string;
   updatedAt?: string;
 };
