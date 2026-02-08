@@ -136,7 +136,11 @@ const ProductsCreate = () => {
                           <CommandEmpty>No category found.</CommandEmpty>
                           <CommandGroup>
                             {categories.map((option) => (
-                              <CommandItem key={option.id} value={option.name} onSelect={() => setValue("categoryId", option.id)}>
+                              <CommandItem
+                                key={option.id}
+                                value={option.name}
+                                onSelect={() => setValue("categoryId", option.id)}
+                              >
                                 <Check className={cn("mr-2 h-4 w-4", option.id === field.value ? "opacity-100" : "opacity-0")} />
                                 {option.name}
                               </CommandItem>
@@ -176,7 +180,11 @@ const ProductsCreate = () => {
                           <CommandEmpty>No supplier found.</CommandEmpty>
                           <CommandGroup>
                             {suppliers.map((option) => (
-                              <CommandItem key={option.id} value={option.name} onSelect={() => setValue("supplierId", option.id)}>
+                              <CommandItem
+                                key={option.id}
+                                value={option.name}
+                                onSelect={() => setValue("supplierId", option.id)}
+                              >
                                 <Check className={cn("mr-2 h-4 w-4", option.id === field.value ? "opacity-100" : "opacity-0")} />
                                 {option.name}
                               </CommandItem>
@@ -251,7 +259,11 @@ const ProductsCreate = () => {
                             <CommandEmpty>No UOM found.</CommandEmpty>
                             <CommandGroup>
                               {uom.map(option => (
-                                <CommandItem key={option.id} value={option.name} onSelect={() => setValue("uomId", option.id)}>
+                                <CommandItem
+                                  key={option.id}
+                                  value={option.name}
+                                  onSelect={() => setValue("uomId", option.id)}
+                                >
                                   <Check className={cn("mr-2 h-4 w-4", option.id === field.value ? "opacity-100" : "opacity-0")} />
                                   {option.name}
                                 </CommandItem>
