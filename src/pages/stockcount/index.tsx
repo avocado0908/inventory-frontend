@@ -9,6 +9,14 @@ import { Database, Layers, Table } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { BACKEND_BASE_URL } from "@/constants";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { FinishButton } from "./components/finishButton";
 
 type StockCountFormState = {
   product: Product;
@@ -20,6 +28,9 @@ export default function StockCountPage() {
   const [countDialogOpen, setCountDialogOpen] = useState(false);
   const [countState, setCountState] = useState<StockCountFormState | null>(null);
   const [counts, setCounts] = useState<Record<number, number>>({});
+  const [statusTab, setStatusTab] = useState<"in progress" | "done">("in progress");
+  const [branchFilter, setBranchFilter] = useState<string>("all");
+  const [mainTab, setMainTab] = useState<"uncounted" | "counted" | "count0">("uncounted");
 
   const countInputRef = useRef<HTMLInputElement>(null);
 
@@ -64,6 +75,18 @@ export default function StockCountPage() {
 
   const products = productsQuery.data?.data ?? [];
   const assignments = assignmentsQuery.data?.data ?? [];
+  const filteredAssignments = assignments.filter((assignment) => {
+    if (assignment.status !== statusTab) return false;
+    if (branchFilter === "all") return true;
+    return String(assignment.branchId) === branchFilter;
+  });
+
+  const filteredProducts = products.filter((product) => {
+    const qty = counts[product.id];
+    if (mainTab === "uncounted") return qty === undefined;
+    if (mainTab === "count0") return qty === 0;
+    return typeof qty === "number" && qty > 0;
+  });
 
   useEffect(() => {
     if (!effectiveAssignmentId) {
@@ -160,11 +183,42 @@ export default function StockCountPage() {
                 <Layers className="h-4 w-4" /> Assignment list
               </div>
             </div>
+            <div className="mt-3">
+              <Select value={branchFilter} onValueChange={setBranchFilter}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filter by branch" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All branches</SelectItem>
+                  {branchQuery.data?.data?.map((branch) => (
+                    <SelectItem key={branch.id} value={String(branch.id)}>
+                      {branch.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex rounded-md border bg-white p-1">
+              {["in progress", "done"].map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  className={cn(
+                    "flex-1 rounded-md px-2 py-1 text-xs font-semibold uppercase",
+                    statusTab === tab ? "bg-muted text-foreground" : "text-muted-foreground"
+                  )}
+                  onClick={() => setStatusTab(tab as "in progress" | "done")}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            
           </div>
 
           <ScrollArea className="h-[calc(100%-140px)] px-2 pb-4">
             <div className="space-y-1">
-              {assignments.map((assignment) => (
+              {filteredAssignments.map((assignment) => (
                 <button
                   key={assignment.id}
                   type="button"
@@ -196,12 +250,40 @@ export default function StockCountPage() {
                   }`
                 : "Select a branch assignment"}
             </div>
+            <FinishButton
+              disabled={!selectedAssignment}
+              assignmentId={selectedAssignment?.id}
+              onFinished={() => assignmentsQuery.refetch()}
+            />
           </div>
 
           {error && <p className="px-6 pt-4 text-sm text-red-600">{error}</p>}
 
           {selectedAssignment ? (
             <div className="px-6 py-4">
+              <div className="mb-4 flex items-center gap-2">
+                {[
+                  { key: "uncounted", label: "Uncounted" },
+                  { key: "counted", label: "Counted" },
+                  { key: "count0", label: "Count 0" },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    className={cn(
+                      "rounded-md border px-3 py-1 text-xs font-semibold uppercase",
+                      mainTab === tab.key
+                        ? "bg-muted text-foreground"
+                        : "text-muted-foreground hover:bg-muted"
+                    )}
+                    onClick={() =>
+                      setMainTab(tab.key as "uncounted" | "counted" | "count0")
+                    }
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
               <div className="grid grid-cols-7 gap-2 border-b pb-2 text-xs font-semibold uppercase text-muted-foreground">
                 <div>Category</div>
                 <div>Product</div>
@@ -212,7 +294,7 @@ export default function StockCountPage() {
                 <div>Count</div>
               </div>
               <div className="divide-y">
-                {products.map((p) => (
+                {filteredProducts.map((p) => (
                   <div key={p.id} className="grid grid-cols-7 gap-2 py-2 text-sm">
                     <div>{p.category?.name ?? "—"}</div>
                     <div>{p.name}</div>
