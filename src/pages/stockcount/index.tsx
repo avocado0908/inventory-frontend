@@ -250,7 +250,11 @@ export default function StockCountPage() {
                   }`
                 : "Select a branch assignment"}
             </div>
-            <FinishButton />
+            <FinishButton
+              disabled={!selectedAssignment}
+              assignmentId={selectedAssignment?.id}
+              onFinished={() => assignmentsQuery.refetch()}
+            />
           </div>
 
           {error && <p className="px-6 pt-4 text-sm text-red-600">{error}</p>}
