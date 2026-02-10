@@ -3,7 +3,7 @@ import { DataTable } from "@/components/refine-ui/data-table/data-table";
 import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 import { ListView } from "@/components/refine-ui/views/list-view";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { SmartSearchBar } from "@/components/smartSearchBar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Product } from "@/types";
 import { useList } from "@refinedev/core";
@@ -22,6 +22,7 @@ import { CategoryEditDialog } from "../categories/components/categoryEditDialog"
 import { ProductEditDialog } from "./components/ProductEditDialog";
 
 const ProductsList = () => {
+    // ===== UI state =====
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
     const [open, setOpen] = useState(false);
@@ -30,6 +31,7 @@ const ProductsList = () => {
 
     
 
+    // ===== Table filters =====
     const categoryFilters =
         selectedCategory === "all"
             ? []
@@ -52,7 +54,7 @@ const ProductsList = () => {
         : [];
 
 
-
+    // ===== Fetch category options =====
     const { query: categoriesQuery } = useList<Category>({
         resource: "categories",
         pagination: { pageSize: 100 },
@@ -61,6 +63,7 @@ const ProductsList = () => {
     const categories = categoriesQuery.data?.data ?? [];
 
     return (
+        // ===== Page layout =====
         <ListView>
             <Breadcrumb />
             <h1 className="page-title">Products</h1>
@@ -68,15 +71,13 @@ const ProductsList = () => {
             <div className="intro-row">
                 <p>Quick access to essential metrics and management tools.</p>
 
+                {/* Actions */}
                 <div className="actions-row">
                     <div className="search-field">
-                        <Search className="search-icon" />
-                        <Input
-                            type="text"
-                            placeholder="Search by name or barcode..."
-                            className="pl-10 w-full"
+                        <SmartSearchBar
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={setSearchQuery}
+                            placeholder="Search by name or barcode..."
                         />
                     </div>
 
@@ -99,6 +100,7 @@ const ProductsList = () => {
                 </div>
             </div>
 
+           {/* Table */}
            <ProductsTable
                        key={JSON.stringify([...categoryFilters, ...searchFilters])}
                        filters={[...categoryFilters, ...searchFilters]}

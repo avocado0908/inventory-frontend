@@ -15,6 +15,7 @@ type StockCountSidebarProps = {
   selectedBranchId?: string;
 };
 
+// Format YYYY-MM to readable label (e.g., Feb 2026)
 function formatMonthLabel(value: string) {
   if (!value) return "";
   const [year, month] = value.split("-");
@@ -25,6 +26,7 @@ function formatMonthLabel(value: string) {
 }
 
 export function StockCountSidebar({ selectedAssignmentId, selectedBranchId }: StockCountSidebarProps) {
+  // ===== Data fetching =====
   const { query } = useList<BranchAssignments>({
     resource: "branch-assignments",
     pagination: { pageSize: 100 },
@@ -36,10 +38,12 @@ export function StockCountSidebar({ selectedAssignmentId, selectedBranchId }: St
   });
   const branches = branchesQuery.data?.data ?? [];
 
+  // ===== Local UI state =====
   const [localBranchId, setLocalBranchId] = useState<string>(selectedBranchId ?? "all");
 
   const assignments = query.data?.data ?? [];
 
+  // ===== Derived list for rendering =====
   const items = useMemo(
     () =>
       assignments
@@ -59,6 +63,7 @@ export function StockCountSidebar({ selectedAssignmentId, selectedBranchId }: St
   );
 
   return (
+    // ===== Sidebar UI =====
     <aside className="w-64 shrink-0 rounded-md border bg-background p-4">
       <h2 className="text-sm font-semibold">Stock Count Lists</h2>
       <div className="mt-3">

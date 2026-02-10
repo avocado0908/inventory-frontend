@@ -20,6 +20,7 @@ type BranchAssignmentEditDialogProps = {
   selectedAssignment: BranchAssignments | null;
 };
 
+// Format YYYY-MM to readable label (e.g., Feb 2026)
 function formatMonthLabel(value: string) {
   if (!value) return "";
   const [year, month] = value.split("-");
@@ -34,12 +35,14 @@ export function BranchAssingmentEditDialog({
   setEditOpen,
   selectedAssignment,
 }: BranchAssignmentEditDialogProps) {
+  // ===== Data fetching =====
   const { query: branchesQuery } = useList<Branch>({
     resource: "branches",
     pagination: { pageSize: 100 },
   });
   const branches = branchesQuery.data?.data ?? [];
 
+  // ===== Form setup =====
   const form = useForm({
     refineCoreProps: {
       resource: "branch-assignments",
@@ -69,10 +72,12 @@ export function BranchAssingmentEditDialog({
   const computedName =
     branchName && monthLabel ? `${branchName} - ${monthLabel}` : "";
 
+  // Keep assignment name in sync with branch + month
   if (computedName && form.getValues("name") !== computedName) {
     form.setValue("name", computedName);
   }
 
+  // Hydrate form when a new assignment is selected
   useEffect(() => {
     if (!selectedAssignment) return;
     reset({
@@ -82,12 +87,14 @@ export function BranchAssingmentEditDialog({
     });
   }, [reset, selectedAssignment]);
 
+  // Submit edits
   const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
     await onFinish(values);
     setEditOpen(false);
   };
 
   return (
+    // ===== Dialog UI =====
     <Dialog open={editOpen} onOpenChange={setEditOpen}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader className="text-start">

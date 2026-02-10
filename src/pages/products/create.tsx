@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
-export const productCreateSchema = z.object({
+const productCreateSchema = z.object({
   categoryId: z.coerce.number().min(1, "Category is required"),
   supplierId: z.coerce.number().min(1, "Supplier is required"),
   name: z.string().min(2, "Product name must be at least 2 characters"),
@@ -41,8 +41,10 @@ export const productCreateSchema = z.object({
 type ProductFormValues = z.infer<typeof productCreateSchema>;
 
 const ProductsCreate = () => {
+  // ===== Navigation =====
   const back = useBack();
 
+  // ===== Form setup =====
   const form = useForm<BaseRecord, HttpError, ProductFormValues>({
     resolver: zodResolver(productCreateSchema),
     refineCoreProps: { resource: "products", action: "create" },
@@ -66,7 +68,7 @@ const ProductsCreate = () => {
     setValue,
   } = form;
 
-  // Fetch options
+  // ===== Fetch options =====
   const { query: categoriesQuery } = useList<Category>({ resource: "categories", pagination: { pageSize: 100 } });
   const { query: suppliersQuery } = useList<Supplier>({ resource: "suppliers", pagination: { pageSize: 100 } });
   const { query: uomQuery } = useList<Uom>({ resource: "uom", pagination: { pageSize: 100 } });
@@ -75,6 +77,7 @@ const ProductsCreate = () => {
   const suppliers = suppliersQuery.data?.data ?? [];
   const uom = uomQuery.data?.data ?? [];
 
+  // ===== Submit handler =====
   const onSubmit = async (values: ProductFormValues) => {
     try {
       await onFinish(values);
@@ -84,6 +87,7 @@ const ProductsCreate = () => {
   };
 
   return (
+    // ===== Page layout =====
     <CreateView>
       <Breadcrumb />
       <h1 className="page-title">Create a Product</h1>

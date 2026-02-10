@@ -13,6 +13,7 @@ type ProductsTable = {
 }
 
 export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
+    // ===== Table columns =====
     const productColumns = useMemo<ColumnDef<Product>[]>(
         () => [
             {
@@ -131,5 +132,6 @@ export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
     },
   });
 
+  // ===== Render =====
   return <DataTable table={productsTable} />;
 }

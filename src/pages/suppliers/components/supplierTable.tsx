@@ -13,6 +13,7 @@ type SupplierTable = {
     };
     
     export function SupplierTable({ onEdit, filters = [] }: SupplierTable) {
+      // ===== Table columns =====
       const supplierColumns = useMemo<ColumnDef<Supplier>[]>(
         () => [
           {
@@ -93,5 +94,6 @@ type SupplierTable = {
         },
       });
     
+      // ===== Render =====
       return <DataTable table={supplierTable} />;
 }

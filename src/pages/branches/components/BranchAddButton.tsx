@@ -22,8 +22,10 @@ type BranchFormValues = {
 };
 
 export function BranchAddButton() {
+    // ===== Dialog state =====
     const [open, setOpen] = useState(false);
 
+    // ===== Form setup =====
     const {
         refineCore: { onFinish, formLoading },
         ...form
@@ -45,10 +47,12 @@ export function BranchAddButton() {
 
     return (
         <>
+            {/* Trigger */}
             <Button onClick={() => setOpen(true)}>
                 <Plus/> Add Branch
             </Button>
 
+            {/* Dialog */}
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-w-md">
                     <DialogHeader>

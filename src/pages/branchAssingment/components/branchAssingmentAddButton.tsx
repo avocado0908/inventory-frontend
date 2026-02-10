@@ -32,6 +32,7 @@ type BranchAssignmentFormValues = {
   assignedMonth: string;
 };
 
+// Format YYYY-MM to readable label (e.g., Feb 2026)
 function formatMonthLabel(value: string) {
   if (!value) return "";
   const [year, month] = value.split("-");
@@ -42,14 +43,17 @@ function formatMonthLabel(value: string) {
 }
 
 export function BranchAssingmentAddButton() {
+  // ===== Dialog state =====
   const [open, setOpen] = useState(false);
 
+  // ===== Data fetching =====
   const { query: branchesQuery } = useList<Branch>({
     resource: "branches",
     pagination: { pageSize: 100 },
   });
   const branches = branchesQuery.data?.data ?? [];
 
+  // ===== Form setup =====
   const {
     refineCore: { onFinish, formLoading },
     ...form
@@ -73,10 +77,12 @@ export function BranchAssingmentAddButton() {
   const computedName =
     branchName && monthLabel ? `${branchName} - ${monthLabel}` : "";
 
+  // Keep assignment name in sync with branch + month
   if (computedName && form.getValues("name") !== computedName) {
     form.setValue("name", computedName);
   }
 
+  // Submit new assignment
   const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
     await onFinish(values);
     setOpen(false);
@@ -85,10 +91,12 @@ export function BranchAssingmentAddButton() {
 
   return (
     <>
+      {/* Trigger */}
       <Button onClick={() => setOpen(true)}>
         <Plus /> Add Assignment
       </Button>
 
+      {/* Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>

@@ -9,10 +9,12 @@ import { Input } from "@/components/ui/input";
 import { CategoryEditDialog } from "./components/categoryEditDialog";
 
 export default function CategoriesList() {
+  // ===== UI state =====
   const [editOpen, setEditOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // ===== Table filters =====
   const searchFilters = searchQuery
         ? [
               {
@@ -24,6 +26,7 @@ export default function CategoriesList() {
         
 
   return (
+    // ===== Page layout =====
     <ListView>
       <Breadcrumb />
       <h1 className="page-title">Categories List</h1>
@@ -31,6 +34,7 @@ export default function CategoriesList() {
           <div className="intro-row">
             <p>Manage your categories here.</p>
 
+            {/* Actions */}
             <div className="actions-row">
               <div className="search-field">
                   <Search className="search-icon" />
@@ -49,6 +53,7 @@ export default function CategoriesList() {
             </div>
           </div>
 
+          {/* Table */}
           <CategoriesTable
             filters={searchQuery ? [{ field: "name", operator: "contains", value: searchQuery }] : []}
             onEdit={(category) => {
@@ -57,6 +62,7 @@ export default function CategoriesList() {
             }}
           />
 
+          {/* Edit dialog */}
           <CategoryEditDialog
             editOpen={editOpen}
             setEditOpen={setEditOpen}

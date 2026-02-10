@@ -8,10 +8,12 @@ import { SupplierTable } from './components/supplierTable'
 import { SupplierEditDialog } from './components/supplierEditDialog'
 
 const SuppliersList = () => {
+    // ===== UI state =====
     const [editOpen, setEditOpen] = useState(false);
       const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
       const [searchQuery, setSearchQuery] = useState("");
     
+      // ===== Table filters =====
       const searchFilters = searchQuery
             ? [
                   {
@@ -22,12 +24,14 @@ const SuppliersList = () => {
               ] : [];
 
   return (
+    // ===== Page layout =====
     <ListView>
         <h1 className='page-title'>Supplier List</h1>
 
         <div className='intro-row'>
             <p>Manage your categories here.</p>
 
+            {/* Actions */}
             <div className="actions-row">
               <div className="search-field">
                   <Search className="search-icon" />
@@ -47,6 +51,7 @@ const SuppliersList = () => {
             </div>
         </div>
 
+        {/* Table */}
         <SupplierTable
             filters={searchQuery ? [{ field: "name", operator: "contains", value: searchQuery }] : []}
             onEdit={(supplier) => {
@@ -54,6 +59,7 @@ const SuppliersList = () => {
                 setEditOpen(true);
             }}
         />
+        {/* Edit dialog */}
         <SupplierEditDialog
                     editOpen={editOpen}
                     setEditOpen={setEditOpen}

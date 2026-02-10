@@ -9,10 +9,12 @@ import { BranchAssingmentEditDialog } from "./components/branchAssingmentEditDia
 import { BranchAssingmentAddButton } from "./components/branchAssingmentAddButton";
 
 export default function BranchAssingment() {
+  // ===== UI state =====
   const [editOpen, setEditOpen] = useState(false);
   const [selectedBranchAssingment, setSelectedBranchAssingment] = useState<BranchAssignments | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // ===== Table filters =====
   const searchFilters = searchQuery
         ? [
               {
@@ -24,6 +26,7 @@ export default function BranchAssingment() {
         
 
   return (
+    // ===== Page layout =====
     <ListView>
       <Breadcrumb />
           <h1 className="page-title">Branch Assignment List</h1>
@@ -31,6 +34,7 @@ export default function BranchAssingment() {
           <div className="intro-row">
             <p>Manage your branch assignments here.</p>
 
+            {/* Actions */}
             <div className="actions-row">
               <div className="search-field">
                   <Search className="search-icon" />
@@ -49,6 +53,7 @@ export default function BranchAssingment() {
             </div>
           </div>
 
+          {/* Table */}
           <BranchAssingmentTable
                       filters={searchQuery ? [{ field: "name", operator: "contains", value: searchQuery }] : []}
                       onEdit={(assignment) => {
@@ -56,6 +61,7 @@ export default function BranchAssingment() {
                           setEditOpen(true);
                       }}
                   />
+          {/* Edit dialog */}
           <BranchAssingmentEditDialog
                       editOpen={editOpen}
                       setEditOpen={setEditOpen}
