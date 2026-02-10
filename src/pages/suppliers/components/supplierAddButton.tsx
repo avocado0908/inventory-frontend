@@ -25,8 +25,10 @@ type SuppliterFormValues = {
 };
 
 export function SupplierAddButton () {
+    // ===== Dialog state =====
     const [open, setOpen] = useState(false);
 
+    // ===== Form setup =====
     const {
             refineCore: { onFinish, formLoading },
             ...form
@@ -51,10 +53,12 @@ export function SupplierAddButton () {
 
   return (
     <>
+            {/* Trigger */}
             <Button onClick={() => setOpen(true)}>
                 <Plus/> Add Supplier
             </Button>
 
+            {/* Dialog */}
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="max-w-md">
                     <DialogHeader>

@@ -17,6 +17,7 @@ export function SupplierEditDialog({
   setEditOpen,
   selectedSupplier,
 }: SupplierEditDialogProps) {
+  // ===== Form setup =====
   const form = useForm({
     refineCoreProps: {
       resource: "suppliers",
@@ -39,6 +40,7 @@ export function SupplierEditDialog({
     reset,
   } = form;
 
+  // ===== Hydrate form when selection changes =====
   useEffect(() => {
     if (!selectedSupplier) return;
     reset({
@@ -49,12 +51,14 @@ export function SupplierEditDialog({
     });
   }, [reset, selectedSupplier]);
 
+  // ===== Submit edits =====
   const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
     await onFinish(values);
     setEditOpen(false);
   };
 
   return (
+    // ===== Dialog UI =====
     <Dialog open={editOpen} onOpenChange={setEditOpen}>
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-start'>
@@ -63,6 +67,7 @@ export function SupplierEditDialog({
             Update the supplier here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
+        {/* Edit form */}
         {selectedSupplier && (
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

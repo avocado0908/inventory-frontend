@@ -14,6 +14,7 @@ export function BranchEditDialog({
   selectedBranch,
 }: BranchEditDialogProps) {
   return (
+    // ===== Dialog UI =====
     <Dialog open={editOpen} onOpenChange={setEditOpen}>
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-start'>
@@ -22,7 +23,8 @@ export function BranchEditDialog({
             Update the branch here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        
+
+        {/* Edit form */}
         {selectedBranch && (
           <EditForm
             resource="branches"

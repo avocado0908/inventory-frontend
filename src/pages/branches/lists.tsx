@@ -9,10 +9,12 @@ import { BranchAddButton } from "./components/BranchAddButton";
 import { BranchEditDialog } from "./components/BranchEditDialog";
 
 export default function BranchList() {
+  // ===== UI state =====
   const [editOpen, setEditOpen] = useState(false);
     const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
   
+    // ===== Table filters =====
     const searchFilters = searchQuery
           ? [
                 {
@@ -24,6 +26,7 @@ export default function BranchList() {
           
   
     return (
+      // ===== Page layout =====
       <ListView>
         <Breadcrumb />
         <h1 className="page-title">Branch List</h1>
@@ -31,6 +34,7 @@ export default function BranchList() {
             <div className="intro-row">
               <p>Manage your branch here.</p>
   
+              {/* Actions */}
               <div className="actions-row">
                 <div className="search-field">
                     <Search className="search-icon" />
@@ -49,6 +53,7 @@ export default function BranchList() {
               </div>
             </div>
   
+            {/* Table */}
             <BranchTable
               filters={searchQuery ? [{ field: "name", operator: "contains", value: searchQuery }] : []}
               onEdit={(branch) => {
@@ -57,6 +62,7 @@ export default function BranchList() {
               }}
             />
 
+            {/* Edit dialog */}
             <BranchEditDialog
               editOpen={editOpen}
               setEditOpen={setEditOpen}

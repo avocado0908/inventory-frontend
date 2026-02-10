@@ -39,6 +39,7 @@ export function ProductEditDialog({
     setEditOpen,
     selectedProduct,
 }: ProductEditDialogProps ) {
+  // ===== Form setup =====
   const form = useForm({
     refineCoreProps: {
       resource: "products",
@@ -66,6 +67,7 @@ export function ProductEditDialog({
     reset,
   } = form;
 
+  // ===== Hydrate form when selection changes =====
   useEffect(() => {
     if (!selectedProduct) return;
     reset({
@@ -80,6 +82,7 @@ export function ProductEditDialog({
     });
   }, [reset, selectedProduct]);
 
+  // ===== Fetch option lists =====
   const { query: categoriesQuery } = useList<Category>({
     resource: "categories",
     pagination: { pageSize: 100 },
@@ -97,12 +100,14 @@ export function ProductEditDialog({
   const suppliers = suppliersQuery.data?.data ?? [];
   const uom = uomQuery.data?.data ?? [];
 
+  // ===== Submit edits =====
   const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
     await onFinish(values);
     setEditOpen(false);
   };
 
 return (
+    // ===== Dialog UI =====
     <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader className="text-start">

@@ -12,6 +12,7 @@ type CategoriesTable = {
 };
 
 export function CategoriesTable({ onEdit, filters = [] }: CategoriesTable) {
+  // ===== Table columns =====
   const categoryColumns = useMemo<ColumnDef<Category>[]>(
     () => [
       {
@@ -50,5 +51,6 @@ export function CategoriesTable({ onEdit, filters = [] }: CategoriesTable) {
     },
   });
 
+  // ===== Render =====
   return <DataTable table={categoryTable} />;
 }

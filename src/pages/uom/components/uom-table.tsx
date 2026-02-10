@@ -2,28 +2,38 @@ import { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTable } from "@refinedev/react-table";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
-import type { Branch } from "@/types";
+import type { Uom } from "@/types";
 import { DataTableRowActions } from "../../../components/table-row-action";
 
-
-type BranchTable = {
-  onEdit: (branch: Branch) => void;
+type UomTableProps = {
+  onEdit: (uom: Uom) => void;
   filters?: any[];
 };
 
-export function BranchTable({ onEdit, filters = [] }: BranchTable) {
+export function UomTable({ onEdit, filters = [] }: UomTableProps) {
   // ===== Table columns =====
-  const branchColumns = useMemo<ColumnDef<Branch>[]>(
+  const columns = useMemo<ColumnDef<Uom>[]>(
     () => [
       {
         id: "name",
         accessorKey: "name",
-        size: 300,
+        size: 200,
         header: () => <p className="column-title">Name</p>,
         cell: ({ getValue }) => (
           <span className="text-foreground">{getValue<string>()}</span>
         ),
         filterFn: "includesString",
+      },
+      {
+        id: "description",
+        accessorKey: "description",
+        size: 260,
+        header: () => <p className="column-title">Description</p>,
+        cell: ({ getValue }) => (
+          <span className="text-muted-foreground">
+            {getValue<string | null | undefined>() || "—"}
+          </span>
+        ),
       },
       {
         id: "actions",
@@ -32,8 +42,8 @@ export function BranchTable({ onEdit, filters = [] }: BranchTable) {
         cell: ({ row }) => (
           <DataTableRowActions
             record={row.original}
-            resource="branches"
-            onEdit={onEdit} 
+            resource="uom"
+            onEdit={onEdit}
           />
         ),
       },
@@ -41,10 +51,10 @@ export function BranchTable({ onEdit, filters = [] }: BranchTable) {
     [onEdit]
   );
 
-  const branchTable = useTable<Branch>({
-    columns: branchColumns,
+  const table = useTable<Uom>({
+    columns,
     refineCoreProps: {
-      resource: "branches",
+      resource: "uom",
       pagination: { pageSize: 10, mode: "server" },
       filters: { permanent: filters },
       sorters: { initial: [{ field: "id", order: "desc" }] },
@@ -52,5 +62,5 @@ export function BranchTable({ onEdit, filters = [] }: BranchTable) {
   });
 
   // ===== Render =====
-  return <DataTable table={branchTable} />;
+  return <DataTable table={table} />;
 }

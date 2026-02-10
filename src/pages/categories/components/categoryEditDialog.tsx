@@ -14,6 +14,7 @@ export function CategoryEditDialog({
   selectedCategory,
 }: CategoryEditDialogProps) {
   return (
+    // ===== Dialog UI =====
     <Dialog open={editOpen} onOpenChange={setEditOpen}>
       <DialogContent className='sm:max-w-lg'>
         <DialogHeader className='text-start'>
@@ -23,6 +24,7 @@ export function CategoryEditDialog({
           </DialogDescription>
         </DialogHeader>
         
+        {/* Edit form */}
         {selectedCategory && (
           <EditForm
             resource="categories"

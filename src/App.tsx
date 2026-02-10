@@ -12,7 +12,7 @@ import { Toaster } from "./components/refine-ui/notification/toaster";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import Dashboard from "./pages/dashboard";
-import { Box, ChartBarStacked, Home, Truck, Warehouse, Table } from "lucide-react";
+import { Box, ChartBarStacked, Home, Truck, Warehouse, Table, Ruler } from "lucide-react";
 import { Layout } from "./components/layout/layout";
 import ProductsList from "./pages/products/lists";
 import ProductsCreate from "./pages/products/create";
@@ -23,6 +23,7 @@ import SuppliersList from "./pages/suppliers/lists";
 import BranchesList from "./pages/branches/lists";
 import BranchAssingment from "./pages/branchAssingment/lists";
 import TestPage from "./pages/Test";
+import UomList from "./pages/uom/lists";
 
 function App() {
   return (
@@ -77,6 +78,11 @@ function App() {
                   meta: { label: 'BranchAssingment', icon: <Warehouse />}
                 },
                 {
+                  name: 'uom',
+                  list: '/uom',
+                  meta: { label: 'UOM', icon: <Ruler /> }
+                },
+                {
                   name: 'test',
                   list: '/test',
                   meta: { label: 'Test', icon: <Table /> }
@@ -116,6 +122,9 @@ function App() {
                   </Route>
                   <Route path="branchAssingment">
                     <Route index element={<BranchAssingment />} />
+                  </Route>
+                  <Route path="uom">
+                    <Route index element={<UomList />} />
                   </Route>
                   <Route path="test">
                     <Route index element={<TestPage />} />
