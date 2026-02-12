@@ -27,7 +27,7 @@ import UomList from "./pages/uom/lists";
 
 function App() {
   return (
-    <BrowserRouter basename="/inventory-frontend">
+    <BrowserRouter>
       <RefineKbarProvider>
         <ThemeProvider>
           <DevtoolsProvider>

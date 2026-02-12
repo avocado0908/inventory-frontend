@@ -31,7 +31,6 @@ export function UomEditDialog({
             record={{
               id: selectedUom.id,
               name: selectedUom.name,
-              description: selectedUom.description ?? "",
             }}
             label="UOM Name"
             onClose={() => setEditOpen(false)}
