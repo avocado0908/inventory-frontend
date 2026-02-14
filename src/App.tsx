@@ -76,7 +76,7 @@ function App() {
                 {
                   name: 'branchAssingment',
                   list: '/branchAssingment',
-                  meta: { label: 'BranchAssingment', icon: <Warehouse />}
+                  meta: { label: 'Branch Assingments', icon: <Warehouse />}
                 },
                 {
                   name: 'uom',

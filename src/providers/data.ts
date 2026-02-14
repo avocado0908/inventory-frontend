@@ -29,6 +29,11 @@ const options: CreateDataProviderOptions = {
         if (resource === "suppliers") {
           if (field === "name") params.search = value;
         }
+        if (resource === "branch-assignments") {
+          if (field === "name") params.search = value;
+          if (field === "branchId") params.branchId = value;
+          if (field === "assignedMonth") params.month = value;
+        }
         })
         return params;
     },
