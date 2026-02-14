@@ -14,8 +14,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Plus } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 type UomFormValues = {
   name: string;
@@ -42,7 +44,10 @@ export function UomAddButton() {
   });
 
   const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
-    await onFinish(values);
+    await onFinish({
+      name: values.name.trim(),
+      description: values.description?.trim() || null,
+    });
     setOpen(false);
     form.reset();
   };
@@ -68,12 +73,20 @@ export function UomAddButton() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UOM Name</FormLabel>
+                    <FormLabel>
+                      UOM <span className="text-orange-600">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
+                rules={{
+                  required: "UOM is required",
+                  validate: (value) =>
+                    value.trim().length > 0 || "UOM is required",
+                }}
               />
 
               <FormField
@@ -83,7 +96,7 @@ export function UomAddButton() {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Textarea {...field} value={field.value ?? ""} />
                     </FormControl>
                   </FormItem>
                 )}

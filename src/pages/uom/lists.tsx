@@ -42,17 +42,6 @@ export default function UomList() {
 
         {/* Actions */}
         <div className="actions-row">
-          <div className="search-field">
-            <Search className="search-icon" />
-            <Input
-              type="text"
-              placeholder="Search by name..."
-              className="pl-10 w-full"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
           <div className="flex gap-2 w-full sm:w-auto">
             <UomAddButton />
           </div>
