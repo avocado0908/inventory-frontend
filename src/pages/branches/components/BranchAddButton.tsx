@@ -14,6 +14,7 @@ import {
     FormField,
     FormItem,
     FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Plus } from "lucide-react";
 
@@ -40,7 +41,9 @@ export function BranchAddButton() {
     });
 
     const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
-        await onFinish(values);
+        await onFinish({
+            name: values.name.trim(),
+        });
         setOpen(false);
         form.reset();
     };
@@ -67,12 +70,20 @@ export function BranchAddButton() {
                             <FormField
                                 control={form.control}
                                 name="name"
+                                rules={{
+                                    required: "Branch name is required",
+                                    validate: (value) =>
+                                        value.trim().length > 0 || "Branch name is required",
+                                }}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Branch Name</FormLabel>
+                                        <FormLabel>
+                                            Branch Name <span className="text-orange-600">*</span>
+                                        </FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />

@@ -29,7 +29,12 @@ export function BranchEditDialog({
           <EditForm
             resource="branches"
             record={{ id: selectedBranch.id, name: selectedBranch.name }}
-            label="Branch Name"
+            label={
+              <>
+                Branch Name <span className="text-orange-600">*</span>
+              </>
+            }
+            nameRequiredMessage="Branch name is required"
             onClose={() => setEditOpen(false)}
           />
         )}
