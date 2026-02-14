@@ -79,7 +79,8 @@ export function DataTable<TData extends BaseRecord>({
   }, [tableQuery.data?.data, pageSize]);
 
   return (
-    <div className={cn("flex", "flex-col", "flex-1", "gap-4")}>
+    <div className={cn("flex", "flex-col", "flex-1", "min-w-full", "divide-y", "divide-gray-200")}>
+      
       <div ref={tableContainerRef} className={cn("rounded-md", "border")}>
         <Table ref={tableRef} style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHeader>

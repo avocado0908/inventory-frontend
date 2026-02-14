@@ -92,6 +92,8 @@ export type Uom = {
   id: number;
   name: string;
   description?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Product = {

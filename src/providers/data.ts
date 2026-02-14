@@ -23,6 +23,9 @@ const options: CreateDataProviderOptions = {
         if (resource === "categories") {
           if (field === "name") params.search = value;
         }
+        if (resource === "uom") {
+          if (field === "name") params.search = value;
+        }
         })
         return params;
     },

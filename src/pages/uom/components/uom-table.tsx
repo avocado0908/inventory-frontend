@@ -17,34 +17,82 @@ export function UomTable({ onEdit, filters = [] }: UomTableProps) {
       {
         id: "name",
         accessorKey: "name",
-        size: 200,
+        size: 100,
         header: () => <p className="column-title">Name</p>,
         cell: ({ getValue }) => (
-          <span className="text-foreground">{getValue<string>()}</span>
+          <span className="list-title">{getValue<string>()}</span>
         ),
         filterFn: "includesString",
       },
       {
         id: "description",
         accessorKey: "description",
-        size: 260,
+        size: 300,
         header: () => <p className="column-title">Description</p>,
         cell: ({ getValue }) => (
-          <span className="text-muted-foreground">
+          <span className="list-title text-gray-700">
             {getValue<string | null | undefined>() || "—"}
           </span>
         ),
       },
       {
+        id: "createdAt",
+        accessorKey: "createdAt",
+        size: 120,
+        header: () => <p className="column-title">Created</p>,
+        cell: ({ getValue }) => {
+          const raw = getValue<string | null | undefined>();
+          if (!raw) return <span className="list-title">—</span>;
+
+          const date = new Date(raw);
+          if (Number.isNaN(date.getTime())) return <span className="list-title">—</span>;
+
+          const formatted = date.toLocaleDateString("en-NZ", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+
+          return <span className="list-title text-gray-500">{formatted}</span>;
+        },
+      },
+      {
+        id: "updatedAt",
+        accessorKey: "updatedAt",
+        size: 120,
+        header: () => <p className="column-title">Updated</p>,
+        cell: ({ getValue }) => {
+          const raw = getValue<string | null | undefined>();
+          if (!raw) return <span className="list-title">—</span>;
+
+          const date = new Date(raw);
+          if (Number.isNaN(date.getTime())) return <span className="list-title">—</span>;
+
+          const formatted = date.toLocaleDateString("en-NZ", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+
+          return <span className="list-title text-gray-500">{formatted}</span>;
+        },
+      },
+      {
         id: "actions",
-        size: 100,
-        header: () => <p className="column-title">Actions</p>,
+        size: 110,
+        header: () => (
+          <div className="flex w-full justify-end">
+            <p className="column-title">Actions</p>
+          </div>
+        ),
         cell: ({ row }) => (
-          <DataTableRowActions
-            record={row.original}
-            resource="uom"
-            onEdit={onEdit}
-          />
+          <div className="flex w-full justify-end pr-2">
+            <DataTableRowActions
+              record={row.original}
+              resource="uom"
+              onEdit={onEdit}
+            />
+          </div>
         ),
       },
     ],

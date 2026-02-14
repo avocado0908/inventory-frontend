@@ -53,9 +53,13 @@ export function DataTablePagination({
         "items-center",
         "justify-between",
         "flex-wrap",
-        "px-2",
+        "px-6",
+        "py-4",
         "w-full",
-        "gap-2"
+        "gap-2",
+        "bg-gray-50",
+        "border-t", 
+        "border-gray-200"
       )}
     >
       <div
