@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router";
 import { Sidebar } from "@/components/sidebar";
+import { NavigationBar } from "@/components/navigation-bar";
 
 class LayoutErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -28,12 +29,17 @@ class LayoutErrorBoundary extends React.Component<
 }
 
 export function Layout({ children }: { children?: React.ReactNode }) {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false);
+
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
+      <Sidebar collapsed={isSidebarCollapsed} />
 
-      <main className="flex-1 p-6">
-        <LayoutErrorBoundary>{children ?? <Outlet />}</LayoutErrorBoundary>
+      <main className="flex-1">
+        <NavigationBar onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)} />
+        <div className="p-6">
+          <LayoutErrorBoundary>{children ?? <Outlet />}</LayoutErrorBoundary>
+        </div>
       </main>
     </div>
   );
