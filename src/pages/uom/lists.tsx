@@ -28,11 +28,11 @@ export default function UomList() {
   return (
     // ===== Page layout =====
     <ListView>
-      <div className=" bg-gray-50 p-8">
+      <div className="bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto space-y-6">
       <Breadcrumb />
       
-
+      {/* Heading */}
       <div className="intro-row">
         <div>
           <h1 className="page-title">UOM List</h1>

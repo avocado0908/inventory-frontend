@@ -20,7 +20,7 @@ export function UomTable({ onEdit, filters = [] }: UomTableProps) {
         size: 100,
         header: () => <p className="column-title">Name</p>,
         cell: ({ getValue }) => (
-          <span className="list-title">{getValue<string>()}</span>
+          <span className="list-title font-bold">{getValue<string>()}</span>
         ),
         filterFn: "includesString",
       },

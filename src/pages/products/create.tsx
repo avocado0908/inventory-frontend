@@ -228,7 +228,7 @@ const ProductsCreate = () => {
                 {/* PKG */}
                 <FormField control={form.control} name="pkg" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Package Quantity</FormLabel>
+                      <FormLabel>Package Quantity - PKG <span className="text-orange-600">*</span></FormLabel>
                       <FormControl>
                         <Input type="number" {...field} />
                       </FormControl>

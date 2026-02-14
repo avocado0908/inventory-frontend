@@ -65,59 +65,79 @@ const ProductsList = () => {
     return (
         // ===== Page layout =====
         <ListView>
-            <Breadcrumb />
-            <h1 className="page-title">Products</h1>
+            <div className="bg-gray-50 p-6">
+                <div className="max-w-7xl mx-auto space-y-6">
+                    <Breadcrumb />
+            
+                    {/* Heading */}
+                    <div className="intro-row">
+                        <div>
+                            <h1 className="page-title">Products</h1>
+                            <p>Quick access to essential metrics and management tools.</p>
+                        </div>
 
-            <div className="intro-row">
-                <p>Quick access to essential metrics and management tools.</p>
-
-                {/* Actions */}
-                <div className="actions-row">
-                    <div className="search-field">
-                        <SmartSearchBar
-                            value={searchQuery}
-                            onChange={setSearchQuery}
-                            placeholder="Search by name or barcode..."
-                        />
+                        {/* Actions */}
+                        <div className="actions-row">
+                            <div className="flex gap-2 w-full sm:w-auto">
+                                <CreateButton resource="products" />
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="flex gap-2 w-full sm:w-auto">
-                        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Filter by Category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All Categories</SelectItem>
-                                {categories.map((category) => (
-                                    <SelectItem key={category.id} value={String(category.id)}>
-                                        {category.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <CreateButton resource="products" />
+                    {/* table */}
+                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden text-black">
+                        {/* Search bar */}
+                        <div className="p-4 flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-50/50 border-b border-gray-200">
+                            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1 justify-between">
+                                <div className="relative w-full md:w-80">
+                                <div className="search-field">
+                                        <SmartSearchBar
+                                            value={searchQuery}
+                                            onChange={setSearchQuery}
+                                            placeholder="Search by name or barcode..."
+                                        />
+                                    </div>
+                                </div>
+                                {/* Category Tab */}
+                                <div className="flex items-center gap-3 w-full md:w-auto">
+                                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Filter by Category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Categories</SelectItem>
+                                            {categories.map((category) => (
+                                                <SelectItem key={category.id} value={String(category.id)}>
+                                                    {category.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>        
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Data Table */}
+                        <div className="overflow-x-auto">
+                        <ProductsTable
+                                    key={JSON.stringify([...categoryFilters, ...searchFilters])}
+                                    filters={[...categoryFilters, ...searchFilters]}
+                                    onEdit={(product) => {
+                                        setSelectedProduct(product);
+                                        setEditOpen(true);
+                                    }}
+                                    />
+                        </div>
                     </div>
+
+                    {/* Edit modal */}
+                    <ProductEditDialog
+                                editOpen={editOpen}
+                                setEditOpen={setEditOpen}
+                                selectedProduct={selectedProduct}
+                    />
                 </div>
             </div>
-
-           {/* Table */}
-           <ProductsTable
-                       key={JSON.stringify([...categoryFilters, ...searchFilters])}
-                       filters={[...categoryFilters, ...searchFilters]}
-                       onEdit={(product) => {
-                         setSelectedProduct(product);
-                         setEditOpen(true);
-                       }}
-                     />
-
-            {/* Edit modal */}
-            <ProductEditDialog
-                        editOpen={editOpen}
-                        setEditOpen={setEditOpen}
-                        selectedProduct={selectedProduct}
-            />
-
-
         </ListView>
     );
 };

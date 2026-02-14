@@ -102,7 +102,15 @@ export function ProductEditDialog({
 
   // ===== Submit edits =====
   const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
-    await onFinish(values);
+    await onFinish({
+      ...values,
+      name: String(values.name).trim(),
+      categoryId: Number(values.categoryId),
+      supplierId: Number(values.supplierId),
+      uomId: Number(values.uomId),
+      price: Number(values.price),
+      pkg: Number(values.pkg),
+    });
     setEditOpen(false);
   };
 
@@ -123,9 +131,15 @@ return (
                 <FormField
                   control={control}
                   name="name"
+                  rules={{
+                    required: "Product name is required",
+                    validate: (value) =>
+                      String(value ?? "").trim().length > 0 ||
+                      "Product name is required",
+                  }}
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Product Name</FormLabel>
+                      <FormLabel>Product Name <span className="text-orange-600">*</span></FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -137,9 +151,13 @@ return (
                 <FormField
                   control={control}
                   name="categoryId"
+                  rules={{
+                    validate: (value) =>
+                      Number(value) > 0 || "Category is required",
+                  }}
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Category</FormLabel>
+                      <FormLabel>Category <span className="text-orange-600">*</span></FormLabel>
                       <Select
                         value={field.value ? String(field.value) : ""}
                         onValueChange={(value) => setValue("categoryId", Number(value))}
@@ -166,9 +184,13 @@ return (
                 <FormField
                   control={control}
                   name="supplierId"
+                  rules={{
+                    validate: (value) =>
+                      Number(value) > 0 || "Supplier is required",
+                  }}
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Supplier</FormLabel>
+                      <FormLabel>Supplier <span className="text-orange-600">*</span></FormLabel>
                       <Select
                         value={field.value ? String(field.value) : ""}
                         onValueChange={(value) => setValue("supplierId", Number(value))}
@@ -196,6 +218,14 @@ return (
                   <FormField
                     control={control}
                     name="price"
+                    rules={{
+                      validate: (value) => {
+                        const n = Number(value);
+                        if (Number.isNaN(n)) return "Price is required";
+                        if (n < 0) return "Price must be 0 or greater";
+                        return true;
+                      },
+                    }}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Price <span className="text-orange-600">*</span></FormLabel>
@@ -222,9 +252,14 @@ return (
                   <FormField
                     control={control}
                     name="pkg"
+                    rules={{
+                      validate: (value) =>
+                        Number(value) > 0 ||
+                        "Package quantity is required",
+                    }}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Package Quantity</FormLabel>
+                        <FormLabel>Package Quantity - PKG<span className="text-orange-600">*</span></FormLabel>
                         <FormControl>
                           <Input type="number" {...field} />
                         </FormControl>
@@ -236,9 +271,13 @@ return (
                   <FormField
                     control={control}
                     name="uomId"
+                    rules={{
+                      validate: (value) =>
+                        Number(value) > 0 || "UOM is required",
+                    }}
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>Unit of Measure - UOM</FormLabel>
+                        <FormLabel>Unit of Measure - UOM <span className="text-orange-600">*</span></FormLabel>
                         <Select
                           value={field.value ? String(field.value) : ""}
                           onValueChange={(value) => setValue("uomId", Number(value))}

@@ -34,7 +34,7 @@ export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
                 size: 300,
                 header: () => <p className="column-title">Name</p>,
                 cell: ({ getValue }) => (
-                  <span className="truncate line-clamp-2 block">
+                  <span className="list-title font-bold">
                     {getValue<string>()}
                   </span>
                 ),
@@ -43,7 +43,7 @@ export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
             {
                 id: "price",
                 accessorKey: "price",
-                size: 120,
+                size: 80,
                 meta: { align: "center" },
                 header: () => <p className="column-title text-center">Price</p>,
                 cell: ({ getValue }) => (
@@ -56,21 +56,9 @@ export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
                 ),
             },
             {
-                id: "barcode",
-                accessorKey: "barcode",
-                size: 140,
-                meta: { align: "center" },
-                header: () => <p className="column-title text-center">Barcode</p>,
-                cell: ({ getValue }) => (
-                  <span className="text-foreground text-center block">
-                    {getValue<string | null | undefined>() || "—"}
-                  </span>
-                ),
-            },
-            {
                 id: "supplier",
                 accessorKey: "supplier.name",
-                size: 100,
+                size: 80,
                 meta: { align: "center" },
                 header: () => <p className="column-title text-center">Supplier</p>,
                 cell: ({ getValue }) => (
@@ -82,7 +70,7 @@ export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
             {
                 id: "pkg",
                 accessorKey: "pkg",
-                size: 100,
+                size: 80,
                 meta: { align: "center" },
                 header: () => <p className="column-title text-center">PKG</p>,
                 cell: ({ getValue }) => (
@@ -94,7 +82,7 @@ export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
             {
                 id: "uom",
                 accessorKey: "uom.name",
-                size: 100,
+                size: 60,
                 meta: { align: "center" },
                 header: () => <p className="column-title text-center">UOM</p>,
                 cell: ({ getValue }) => (
@@ -105,18 +93,21 @@ export const ProductsTable = ({ onEdit, filters = [] }: ProductsTable) => {
             },
             {
                 id: "actions",
-                size: 160,
-                meta: { align: "center" },
-                header: () => <p className="column-title text-center">Actions</p>,
+                size: 110,
+                header: () => (
+                  <div className="flex w-full justify-end">
+                    <p className="column-title">Actions</p>
+                  </div>
+                ),
                 cell: ({ row }) => (
-                            <div className="flex justify-center">
-                            <DataTableRowActions
-                            record={row.original}
-                            resource="products"
-                            onEdit={onEdit} 
-                            />
-                            </div>
-                        ),
+                    <div className="flex w-full justify-end pr-2">
+                    <DataTableRowActions
+                    record={row.original}
+                    resource="products"
+                    onEdit={onEdit} 
+                    />
+                    </div>
+                ),
             },
         ],
         [onEdit]
