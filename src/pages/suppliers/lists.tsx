@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import { SupplierAddButton } from './components/supplierAddButton'
 import { SupplierTable } from './components/supplierTable'
 import { SupplierEditDialog } from './components/supplierEditDialog'
+import { Breadcrumb } from '@/components/refine-ui/layout/breadcrumb'
 
 const SuppliersList = () => {
     // ===== UI state =====
@@ -28,6 +29,7 @@ const SuppliersList = () => {
     <ListView>
         <div className="bg-gray-50 p-6">
         <div className="max-w-7xl mx-auto space-y-6">
+            <Breadcrumb />
         
       {/* Heading */}
         <div className='intro-row'>

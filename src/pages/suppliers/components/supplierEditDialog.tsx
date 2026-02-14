@@ -33,6 +33,7 @@ export function SupplierEditDialog({
               contactName: selectedSupplier.contactName ?? "",
               email: selectedSupplier.email ?? "",
               phone: selectedSupplier.phone ?? "",
+              website: selectedSupplier.website ?? "",
             }}
             label={
               <>

@@ -23,6 +23,7 @@ type SuppliterFormValues = {
     contactName?: string;
     email?: string;
     phone?: string;
+    website?: string;
 };
 
 export function SupplierAddButton () {
@@ -43,6 +44,7 @@ export function SupplierAddButton () {
                 contactName: "",
                 email: "",
                 phone: "",
+                website: "",
             },
         });
     
@@ -53,6 +55,7 @@ export function SupplierAddButton () {
                 contactName: values.contactName?.trim() || null,
                 email: values.email?.trim() || null,
                 phone: values.phone?.trim() || null,
+                website: values.website?.trim() || null,
             });
             setOpen(false);
             form.reset();
@@ -127,6 +130,22 @@ export function SupplierAddButton () {
                                         <FormLabel>Phone</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="website"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Website URL</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="url"
+                                                placeholder="https://example.com"
+                                                {...field}
+                                            />
                                         </FormControl>
                                     </FormItem>
                                 )}

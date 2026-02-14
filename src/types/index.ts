@@ -88,6 +88,7 @@ export type Supplier = {
   contactName?: string | null;
   email?: string | null;
   phone?: string | null;
+  website?: string | null;
 };
 
 export type Uom = {

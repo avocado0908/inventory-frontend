@@ -14,6 +14,7 @@ type EditFormProps = {
     contactName?: string | null;
     email?: string | null;
     phone?: string | null;
+    website?: string | null;
   };
   onClose: () => void;
   label?: ReactNode;
@@ -30,6 +31,7 @@ type EditFormValues = {
   contactName?: string;
   email?: string;
   phone?: string;
+  website?: string;
 };
 
 export function EditForm({
@@ -59,6 +61,7 @@ export function EditForm({
       contactName: record.contactName ?? "",
       email: record.email ?? "",
       phone: record.phone ?? "",
+      website: record.website ?? "",
     },
   });
 
@@ -73,6 +76,7 @@ export function EditForm({
             contactName: values.contactName?.trim() || null,
             email: values.email?.trim() || null,
             phone: values.phone?.trim() || null,
+            website: values.website?.trim() || null,
           }
         : {}),
     });
@@ -156,6 +160,24 @@ export function EditForm({
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <Input {...field} value={field.value ?? ""} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="website"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Website URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="url"
+                      placeholder="https://example.com"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                 </FormItem>
               )}

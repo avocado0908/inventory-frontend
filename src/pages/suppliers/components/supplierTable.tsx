@@ -4,7 +4,7 @@ import { useTable } from "@refinedev/react-table";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
 import type { Supplier } from "@/types";
 import { DataTableRowActions } from "../../../components/table-row-action";
-import { Mail, Phone, Truck } from "lucide-react";
+import { Globe, Mail, Phone, Truck } from "lucide-react";
 
 
 
@@ -36,23 +36,21 @@ type SupplierTable = {
                       <p className="text-[10px] text-gray-400 font-medium uppercase">{contactName}</p>
                     </div>
                   </div>
-                
-
-              </div>
+                </div>
               );
             },
             filterFn: "includesString",                     
           },
           {
             id: "contact",
-            size: 200,
+            size: 100,
             header: () => <p className="column-title">Contact Info</p>,
             cell: ({ row }) => {
               const email = row.original.email || "N/A";
               const phone = row.original.phone || "N/A";
 
               return (
-                <div className="list-title whitespace-nowrap">
+                <div className="list-title">
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5 text-xs text-gray-600">
                       <Mail className="w-3 h-3 text-gray-400"/>
@@ -67,6 +65,39 @@ type SupplierTable = {
               );
             },
             filterFn: "includesString",
+          },
+          {
+            id: "website",
+            accessorKey: "website",
+            size: 100,
+            header:() => <p className="column-title">Website</p>,
+            cell: ({ getValue }) => {
+              const raw = getValue<string | null | undefined>();
+              if (!raw) {
+                return (
+                  <div className="list-title flex items-center gap-1.5 text-xs text-gray-600 max-w-[200px]">
+                    <Globe className="w-3 h-3 text-gray-400" />
+                    <span>N/A</span>
+                  </div>
+                );
+              }
+
+              const href = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+
+              return (
+                <div className="list-title flex items-center gap-1.5 text-xs text-gray-600 max-w-[200px]">
+                  <Globe className="w-3 h-3 text-gray-400" />
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="truncate text-primary underline underline-offset-2"
+                  >
+                    {raw}
+                  </a>
+                </div>
+              );
+            },
           },
           {
             id: "actions",
