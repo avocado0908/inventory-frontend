@@ -24,6 +24,7 @@ import BranchesList from "./pages/branches/lists";
 import BranchAssingment from "./pages/branchAssingment/lists";
 import TestPage from "./pages/Test";
 import UomList from "./pages/uom/lists";
+import NotFoundPage from "./pages/not-found";
 
 function App() {
   return (
@@ -129,6 +130,7 @@ function App() {
                   <Route path="test">
                     <Route index element={<TestPage />} />
                   </Route>
+                  <Route path="*" element={<NotFoundPage />} />
                   
                 </Route>  
               </Routes>
