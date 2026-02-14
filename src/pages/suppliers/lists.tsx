@@ -26,14 +26,31 @@ const SuppliersList = () => {
   return (
     // ===== Page layout =====
     <ListView>
-        <h1 className='page-title'>Supplier List</h1>
-
+        <div className="bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+        
+      {/* Heading */}
         <div className='intro-row'>
-            <p>Manage your categories here.</p>
+            <div>
+                <h1 className='page-title'>Supplier List</h1>
+                <p>Manage your categories here.</p>
+            </div>
 
             {/* Actions */}
             <div className="actions-row">
-              <div className="search-field">
+              <div className="flex gap-2 w-full sm:w-auto">
+                <SupplierAddButton />
+              </div>
+            </div>
+        </div>
+
+  {/* table */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden text-black">
+          {/* Search bar */}
+          <div className="p-4 flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-50/50 border-b border-gray-200">
+            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1">
+              <div className="relative w-full md:w-80">
+                 <div className="search-field">
                   <Search className="search-icon" />
                   <Input
                       type="text"
@@ -42,29 +59,31 @@ const SuppliersList = () => {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                   />
-
               </div>
-
-              <div className="flex gap-2 w-full sm:w-auto">
-                <SupplierAddButton />
               </div>
             </div>
+          </div>
+  
+          {/* Data Table */}
+          <div className="overflow-x-auto">
+            <SupplierTable
+                filters={searchQuery ? [{ field: "name", operator: "contains", value: searchQuery }] : []}
+                onEdit={(supplier) => {
+                    setSelectedSupplier(supplier);
+                    setEditOpen(true);
+                }}
+            />
+          </div>
         </div>
-
-        {/* Table */}
-        <SupplierTable
-            filters={searchQuery ? [{ field: "name", operator: "contains", value: searchQuery }] : []}
-            onEdit={(supplier) => {
-                setSelectedSupplier(supplier);
-                setEditOpen(true);
-            }}
-        />
+        
         {/* Edit dialog */}
         <SupplierEditDialog
                     editOpen={editOpen}
                     setEditOpen={setEditOpen}
                     selectedSupplier={selectedSupplier}
                   />
+            </div>
+        </div>
     </ListView>
   )
 }

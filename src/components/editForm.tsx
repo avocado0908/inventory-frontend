@@ -11,6 +11,9 @@ type EditFormProps = {
     id: number | string;
     name: string;
     description?: string | null;
+    contactName?: string | null;
+    email?: string | null;
+    phone?: string | null;
   };
   onClose: () => void;
   label?: ReactNode;
@@ -18,11 +21,15 @@ type EditFormProps = {
   nameRequiredMessage?: string;
   includeDescription?: boolean;
   descriptionLabel?: ReactNode;
+  includeSupplierFields?: boolean;
 };
 
 type EditFormValues = {
   name: string;
   description?: string;
+  contactName?: string;
+  email?: string;
+  phone?: string;
 };
 
 export function EditForm({
@@ -34,6 +41,7 @@ export function EditForm({
   nameRequiredMessage = "Name is required",
   includeDescription = false,
   descriptionLabel = "Description",
+  includeSupplierFields = false,
 }: EditFormProps) {
   const {
     refineCore: { onFinish, formLoading },
@@ -48,6 +56,9 @@ export function EditForm({
     defaultValues: {
       name: record.name,
       description: record.description ?? "",
+      contactName: record.contactName ?? "",
+      email: record.email ?? "",
+      phone: record.phone ?? "",
     },
   });
 
@@ -56,6 +67,13 @@ export function EditForm({
       name: values.name.trim(),
       ...(includeDescription
         ? { description: values.description?.trim() || null }
+        : {}),
+      ...(includeSupplierFields
+        ? {
+            contactName: values.contactName?.trim() || null,
+            email: values.email?.trim() || null,
+            phone: values.phone?.trim() || null,
+          }
         : {}),
     });
     onClose();
@@ -100,6 +118,49 @@ export function EditForm({
               </FormItem>
             )}
           />
+        )}
+
+        {includeSupplierFields && (
+          <>
+            <FormField
+              control={form.control}
+              name="contactName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contact Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ""} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} value={field.value ?? ""} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ""} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </>
         )}
 
         <div className="flex justify-end gap-2">

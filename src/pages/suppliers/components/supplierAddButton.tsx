@@ -14,6 +14,7 @@ import {
     FormField,
     FormItem,
     FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Plus } from "lucide-react";
 
@@ -46,7 +47,13 @@ export function SupplierAddButton () {
         });
     
         const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
-            await onFinish(values);
+            await onFinish({
+                ...values,
+                name: values.name.trim(),
+                contactName: values.contactName?.trim() || null,
+                email: values.email?.trim() || null,
+                phone: values.phone?.trim() || null,
+            });
             setOpen(false);
             form.reset();
         };
@@ -73,12 +80,18 @@ export function SupplierAddButton () {
                             <FormField
                                 control={form.control}
                                 name="name"
+                                rules={{
+                                    required: "Supplier name is required",
+                                    validate: (value) =>
+                                        value.trim().length > 0 || "Supplier name is required",
+                                }}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Supplier Name</FormLabel>
+                                        <FormLabel>Supplier Name<span className="text-orange-600">*</span></FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
