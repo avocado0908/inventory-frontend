@@ -4,6 +4,7 @@ import { useTable } from "@refinedev/react-table";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
 import type { Uom } from "@/types";
 import { DataTableRowActions } from "../../../components/table-row-action";
+import { Ruler } from "lucide-react";
 
 type UomTableProps = {
   onEdit: (uom: Uom) => void;
@@ -20,7 +21,13 @@ export function UomTable({ onEdit, filters = [] }: UomTableProps) {
         size: 100,
         header: () => <p className="column-title">Name</p>,
         cell: ({ getValue }) => (
-          <span className="list-title font-bold">{getValue<string>()}</span>
+          <div className="flex items-center gap-3 list-title">
+            <div className="p-2 bg-secondary rounded-lg">
+              <Ruler className="lucide lucide-package w-4 h-4 text-primary" />
+            </div>
+            <span className="font-bold">{getValue<string>()}</span>
+          </div>
+           
         ),
         filterFn: "includesString",
       },
