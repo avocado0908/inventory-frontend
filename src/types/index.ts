@@ -38,8 +38,8 @@ declare global {
         options: Record<string, unknown>,
         callback: (
           error: unknown,
-          result: CloudinaryUploadWidgetResults
-        ) => void
+          result: CloudinaryUploadWidgetResults,
+        ) => void,
       ) => CloudinaryWidget;
     };
   }
@@ -78,6 +78,8 @@ export type Category = {
   id: number;
   name: string;
   description?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Supplier = {

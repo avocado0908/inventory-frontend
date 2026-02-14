@@ -14,8 +14,11 @@ import {
     FormField,
     FormItem,
     FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import { Plus } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+
 
 type CategoryFormValues = {
     name: string;
@@ -36,15 +39,19 @@ export function CategoriesAddButton() {
         },
         defaultValues: {
             name: "",
+            description: "",
         },
     });
 
     const onSubmit: Parameters<typeof form.handleSubmit>[0] = async (values) => {
-        await onFinish(values);
+        await onFinish({
+        name: values.name.trim(),
+        description: values.description?.trim() || null,
+        });
         setOpen(false);
         form.reset();
     };
-
+    
     return (
         <>
             {/* Trigger */}
@@ -60,22 +67,40 @@ export function CategoriesAddButton() {
                     </DialogHeader>
 
                     <Form {...form}>
-                        <form
-                            onSubmit={form.handleSubmit(onSubmit)}
-                            className="space-y-4"
-                        >
-                            <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Category Name</FormLabel>
-                                        <FormControl>
-                                            <Input {...field} />
-                                        </FormControl>
-                                    </FormItem>
-                                )}
-                            />
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      Category <span className="text-orange-600">*</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+                rules={{
+                  required: "Category is required",
+                  validate: (value) =>
+                    value.trim().length > 0 || "Category is required",
+                }}
+              />
+
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} value={field.value ?? ""} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
                             <div className="flex justify-end gap-2">
                                 <Button

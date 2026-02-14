@@ -4,6 +4,7 @@ import { useTable } from "@refinedev/react-table";
 import { DataTable } from "@/components/refine-ui/data-table/data-table";
 import type { Category } from "@/types";
 import { DataTableRowActions } from "../../../components/table-row-action";
+import { ChartBarStacked } from "lucide-react";
 
 
 type CategoriesTable = {
@@ -18,23 +19,87 @@ export function CategoriesTable({ onEdit, filters = [] }: CategoriesTable) {
       {
         id: "name",
         accessorKey: "name",
-        size: 300,
+        size: 150,
         header: () => <p className="column-title">Name</p>,
         cell: ({ getValue }) => (
-          <span className="text-foreground">{getValue<string>()}</span>
+          <div className="flex items-center gap-3 list-title">
+            <div className="p-2 bg-secondary rounded-lg">
+              <ChartBarStacked className="lucide lucide-package w-4 h-4 text-primary" />
+            </div>
+            <span className="font-bold">{getValue<string>()}</span>
+          </div>
         ),
         filterFn: "includesString",
       },
       {
+        id: "description",
+        accessorKey: "description",
+        size: 300,
+        header: () => <p className="column-title">Description</p>,
+        cell: ({ getValue }) => (
+          <span className="list-title text-gray-700">
+            {getValue<string | null | undefined>() || "—"}
+          </span>
+        ),
+      },
+      {
+        id: "createdAt",
+        accessorKey: "createdAt",
+        size: 120,
+        header: () => <p className="column-title">Created</p>,
+        cell: ({ getValue }) => {
+          const raw = getValue<string | null | undefined>();
+          if (!raw) return <span className="list-title">—</span>;
+
+          const date = new Date(raw);
+          if (Number.isNaN(date.getTime())) return <span className="list-title">—</span>;
+
+          const formatted = date.toLocaleDateString("en-NZ", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+
+          return <span className="list-title text-gray-500">{formatted}</span>;
+        },
+      },
+      {
+        id: "updatedAt",
+        accessorKey: "updatedAt",
+        size: 120,
+        header: () => <p className="column-title">Updated</p>,
+        cell: ({ getValue }) => {
+          const raw = getValue<string | null | undefined>();
+          if (!raw) return <span className="list-title">—</span>;
+
+          const date = new Date(raw);
+          if (Number.isNaN(date.getTime())) return <span className="list-title">—</span>;
+
+          const formatted = date.toLocaleDateString("en-NZ", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+
+          return <span className="list-title text-gray-500">{formatted}</span>;
+        },
+      },
+      {
         id: "actions",
-        size: 100,
-        header: () => <p className="column-title">Actions</p>,
+        size: 110,
+        header: () => (
+          <div className="flex w-full justify-end">
+            <p className="column-title">Actions</p>
+          </div>
+        ),
         cell: ({ row }) => (
-          <DataTableRowActions
-            record={row.original}
-            resource="categories"
-            onEdit={onEdit} 
-          />
+          <div className="flex w-full justify-end pr-2">
+            <DataTableRowActions
+              record={row.original}
+              resource="categories"
+              onEdit={onEdit}
+            />
+          </div>
         ),
       },
     ],

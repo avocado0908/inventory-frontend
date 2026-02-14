@@ -29,7 +29,7 @@ export default function UomList() {
     // ===== Page layout =====
     <ListView>
       <div className="bg-gray-50 p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
       <Breadcrumb />
       
       {/* Heading */}

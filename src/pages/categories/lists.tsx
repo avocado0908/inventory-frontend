@@ -28,14 +28,31 @@ export default function CategoriesList() {
   return (
     // ===== Page layout =====
     <ListView>
+      <div className="bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
       <Breadcrumb />
-      <h1 className="page-title">Categories List</h1>
 
           <div className="intro-row">
-            <p>Manage your categories here.</p>
-
+            <div>
+              <h1 className="page-title">Categories List</h1>
+              <p>Manage your categories here.</p>
+            </div>
+            
             {/* Actions */}
-            <div className="actions-row">
+            <div className="actions-row">            
+              <div className="flex gap-2 w-full sm:w-auto">
+                <CategoriesAddButton />
+              </div>
+            </div>
+          </div>
+
+
+      {/* table */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden text-black">
+        {/* Search bar */}
+        <div className="p-4 flex flex-col md:flex-row gap-4 items-center justify-between bg-gray-50/50 border-b border-gray-200">
+          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1">
+            <div className="relative w-full md:w-80">
               <div className="search-field">
                   <Search className="search-icon" />
                   <Input
@@ -46,14 +63,11 @@ export default function CategoriesList() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                   />
               </div>
-
-              <div className="flex gap-2 w-full sm:w-auto">
-                <CategoriesAddButton />
-              </div>
             </div>
           </div>
-
-          {/* Table */}
+        </div>
+        {/* Data Table */}
+        <div className="overflow-x-auto">
           <CategoriesTable
             filters={searchQuery ? [{ field: "name", operator: "contains", value: searchQuery }] : []}
             onEdit={(category) => {
@@ -61,6 +75,8 @@ export default function CategoriesList() {
               setEditOpen(true);
             }}
           />
+        </div>
+      </div>
 
           {/* Edit dialog */}
           <CategoryEditDialog
@@ -68,7 +84,8 @@ export default function CategoriesList() {
             setEditOpen={setEditOpen}
             selectedCategory={selectedCategory}
           />
-
+      </div>
+      </div>
     </ListView>
   );
 }

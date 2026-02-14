@@ -18,7 +18,7 @@ export function UomTable({ onEdit, filters = [] }: UomTableProps) {
       {
         id: "name",
         accessorKey: "name",
-        size: 100,
+        size: 150,
         header: () => <p className="column-title">Name</p>,
         cell: ({ getValue }) => (
           <div className="flex items-center gap-3 list-title">
@@ -27,7 +27,6 @@ export function UomTable({ onEdit, filters = [] }: UomTableProps) {
             </div>
             <span className="font-bold">{getValue<string>()}</span>
           </div>
-           
         ),
         filterFn: "includesString",
       },

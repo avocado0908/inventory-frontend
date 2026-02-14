@@ -28,8 +28,19 @@ export function CategoryEditDialog({
         {selectedCategory && (
           <EditForm
             resource="categories"
-            record={{ id: selectedCategory.id, name: selectedCategory.name }}
-            label="Category Name"
+            record={{ 
+              id: selectedCategory.id, 
+              name: selectedCategory.name,
+              description: selectedCategory.description ?? "", 
+            }}
+            label={
+              <>
+                Category Name<span className="text-orange-600">*</span>
+              </>
+            }
+            nameRequiredMessage="Category is required"
+            includeDescription
+            descriptionLabel="Description"
             onClose={() => setEditOpen(false)}
           />
         )}
