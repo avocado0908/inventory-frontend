@@ -1,11 +1,17 @@
 import { useMemo } from "react";
-import { ColumnDef } from "@tanstack/react-table";
-import { useTable } from "@refinedev/react-table";
-import { DataTable } from "@/components/refine-ui/data-table/data-table";
+import { useList } from "@refinedev/core";
 import type { BranchAssignments } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type PreviousStockcountTableProps = {
   currentMonth: string;
@@ -23,82 +29,62 @@ function formatDate(value?: string) {
 }
 
 export function PreviousStockcountTable({ currentMonth }: PreviousStockcountTableProps) {
-  const columns = useMemo<ColumnDef<BranchAssignments>[]>(
-    () => [
-      {
-        id: "name",
-        accessorKey: "name",
-        header: () => <p className="column-title">Branch Assignment</p>,
-        cell: ({ getValue }) => <span className="list-title font-semibold">{getValue<string>()}</span>,
-      },
-      {
-        id: "status",
-        accessorKey: "status",
-        header: () => <p className="column-title">Status</p>,
-        cell: ({ getValue }) => {
-          const status = String(getValue<string>() ?? "");
-          const variant =
-            status === "done" ? "secondary" : status === "in progress" ? "default" : "outline";
-          return (
-            <span className="list-title">
-              <Badge variant={variant}>{status || "—"}</Badge>
-            </span>
-          );
-        },
-      },
-      {
-        id: "createdAt",
-        header: () => <p className="column-title">Created At</p>,
-        cell: ({ row }) => (
-          <span className="list-title text-gray-600">{formatDate(row.original.assignedAt)}</span>
-        ),
-      },
-      {
-        id: "updatedAt",
-        accessorKey: "updatedAt",
-        header: () => <p className="column-title">Updated At</p>,
-        cell: ({ getValue }) => (
-          <span className="list-title text-gray-600">
-            {formatDate(getValue<string | undefined>())}
-          </span>
-        ),
-      },
-      {
-        id: "actions",
-        header: () => (
-          <div className="flex w-full justify-end">
-            <p className="column-title">Action</p>
-          </div>
-        ),
-        cell: ({ row }) => (
-          <div className="flex w-full justify-end pr-2">
-            <Button asChild size="sm">
-              <Link to={`/stockcount-entry?branchAssignmentsId=${row.original.id}`}>Manage</Link>
-            </Button>
-          </div>
-        ),
-      },
-    ],
-    [],
-  );
-
-  const table = useTable<BranchAssignments>({
-    columns,
-    refineCoreProps: {
-      resource: "branch-assignments",
-      pagination: { pageSize: 10, mode: "server" },
-      filters: {
-        permanent: [
-          {
-            field: "excludeAssignedMonth",
-            operator: "eq",
-            value: currentMonth,
-          },
-        ],
-      },
-      sorters: { initial: [{ field: "assignedMonth", order: "desc" }] },
-    },
+  const { query } = useList<BranchAssignments>({
+    resource: "branch-assignments",
+    pagination: { pageSize: 1000 },
   });
 
-  return <DataTable table={table} />;
+  const rows = useMemo(() => {
+    const list = query.data?.data ?? [];
+    return list
+      .filter((item) => item.assignedMonth?.slice(0, 7) !== currentMonth)
+      .sort((a, b) => String(b.assignedMonth).localeCompare(String(a.assignedMonth)));
+  }, [query.data?.data, currentMonth]);
+
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Branch Assignment</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Created At</TableHead>
+          <TableHead>Updated At</TableHead>
+          <TableHead className="text-right">Action</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={5} className="text-center text-muted-foreground">
+              No previous stock counts.
+            </TableCell>
+          </TableRow>
+        ) : (
+          rows.map((row) => {
+            const variant =
+              row.status === "done"
+                ? "secondary"
+                : row.status === "in progress"
+                  ? "default"
+                  : "outline";
+            return (
+              <TableRow key={row.id}>
+                <TableCell className="font-medium">{row.name}</TableCell>
+                <TableCell>
+                  <Badge variant={variant}>{row.status}</Badge>
+                </TableCell>
+                <TableCell>{formatDate(row.assignedAt)}</TableCell>
+                <TableCell>{formatDate(row.updatedAt)}</TableCell>
+                <TableCell className="text-right">
+                  <Button asChild size="sm">
+                    <Link to={`/stockcount-entry?branchAssignmentsId=${row.id}`}>Manage</Link>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            );
+          })
+        )}
+      </TableBody>
+    </Table>
+  );
 }
