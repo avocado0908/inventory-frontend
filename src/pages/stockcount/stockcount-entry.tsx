@@ -1,25 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { useList } from "@refinedev/core";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Product, Branch, BranchAssignments, MonthlyInventory } from "@/types";
-import {  PanelLeft, Database, Layers, Table } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { BACKEND_BASE_URL } from "@/constants";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { FinishButton } from "./components/finishButton";
-import { BranchAssingmentAddButton } from "../branchAssingment/components/branchAssingmentAddButton";
 import { Switch } from "@/components/ui/switch";
 import { SmartSearchBar, matchesSmartSearch } from "@/components/smartSearchBar";
+import { Breadcrumb } from "@/components/refine-ui/layout/breadcrumb";
 
 type StockCountFormState = {
   product: Product;
@@ -58,10 +49,7 @@ function StockCountContent() {
   const [countState, setCountState] = useState<StockCountFormState | null>(null);
   const [counts, setCounts] = useState<Record<number, number>>({});
   const [previousCounts, setPreviousCounts] = useState<Record<number, number>>({});
-  const [statusTab, setStatusTab] = useState<"in progress" | "done">("in progress");
-  const [branchFilter, setBranchFilter] = useState<string>("all");
   const [mainTab, setMainTab] = useState<"all" | "uncounted" | "counted" | "count0">("all");
-  const [leftOpen, setLeftOpen] = useState(true);
   const [bulkMode, setBulkMode] = useState(false);
   const [savingById, setSavingById] = useState<Record<number, boolean>>({});
   const [bulkDrafts, setBulkDrafts] = useState<Record<number, string>>({});
@@ -73,7 +61,6 @@ function StockCountContent() {
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const location = useLocation();
-  const navigate = useNavigate();
   const params = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const branchAssignmentsIdParam = params.get("branchAssignmentsId") ?? "";
 
@@ -115,11 +102,6 @@ function StockCountContent() {
 
   const products = productsQuery.data?.data ?? [];
   const assignments = assignmentsQuery.data?.data ?? [];
-  const filteredAssignments = assignments.filter((assignment) => {
-    if (assignment.status !== statusTab) return false;
-    if (branchFilter === "all") return true;
-    return String(assignment.branchId) === branchFilter;
-  });
 
   // Previous month assignment (same branch)
   const previousAssignmentId = useMemo(() => {
@@ -341,127 +323,20 @@ function StockCountContent() {
   // ===== Render =====
   return (
     <div className="h-screen w-full bg-[#f7f7f5] text-foreground">
-      <div className="flex h-full">
-        {/* ===== Left panel (assignments) ===== */}
-        <section
-          className={cn(
-            "border-r bg-white transition-all duration-200",
-            leftOpen ? "w-72" : "w-12"
-          )}
-        >
-          <div className="flex items-start justify-between border-b p-4">
-            {leftOpen ? (
-              <div>
-                <div className="text-xl font-semibold">Stock Counts</div>
-                <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                  <Database className="h-3 w-3" /> assignments
-                </div>
-              </div>
-            ) : (
-              <div className="text-xs font-semibold text-muted-foreground">SC</div>
-            )}
-            {leftOpen && (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-8 w-8"
-                onClick={() => setLeftOpen((prev) => !prev)}
-              >
-                <PanelLeft className="h-4 w-4" />
-              </Button>
-            )}
+      <div className="h-full">
+        {/* ===== Main content (products + count) ===== */}
+        <main className="h-full bg-white">
+          <div className="border-b px-6 py-3">
+            <Breadcrumb />
           </div>
 
-          {leftOpen && (
-            <>
-              <div className="p-4">
-                <div className="rounded-md border bg-white p-2">
-                  <div className="flex items-center gap-2 text-sm font-medium">
-                    <Layers className="h-4 w-4" /> Assignment list
-                  </div>
-                </div>
-                <div className="mt-3">
-                  <BranchAssingmentAddButton />
-                </div>
-                <div className="mt-3">
-                  <Select value={branchFilter} onValueChange={setBranchFilter}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Filter by branch" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All branches</SelectItem>
-                      {branchQuery.data?.data?.map((branch) => (
-                        <SelectItem key={branch.id} value={String(branch.id)}>
-                          {branch.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex rounded-md border bg-white p-1">
-                  {["in progress", "done"].map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      className={cn(
-                        "flex-1 rounded-md px-2 py-1 text-xs font-semibold uppercase",
-                        statusTab === tab ? "bg-muted text-foreground" : "text-muted-foreground"
-                      )}
-                      onClick={() => setStatusTab(tab as "in progress" | "done")}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <ScrollArea className="h-[calc(100%-140px)] px-2 pb-4">
-                <div className="space-y-1">
-                  {filteredAssignments.map((assignment) => (
-                    <button
-                      key={assignment.id}
-                      type="button"
-                      className={cn(
-                        "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm",
-                        effectiveAssignmentId === String(assignment.id)
-                          ? "bg-muted font-medium"
-                          : "text-muted-foreground hover:bg-muted"
-                      )}
-                      onClick={() =>
-                        navigate(`/stockcount?branchAssignmentsId=${assignment.id}`)
-                      }
-                    >
-                      <Table className="h-4 w-4" />
-                      {assignment.name}
-                    </button>
-                  ))}
-                </div>
-              </ScrollArea>
-            </>
-          )}
-        </section>
-
-        {/* ===== Main content (products + count) ===== */}
-        <main className="flex-1 bg-white">
           <div className="flex items-center justify-between border-b px-6 py-4">
-            <div className="flex items-center gap-2">
-              {!leftOpen ? (
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8"
-                  onClick={() => setLeftOpen(true)}
-                >
-                  <PanelLeft className="h-4 w-4" />
-                </Button>
-              ) : null}
-              <div className="text-sm font-medium">
-                {selectedAssignment
-                  ? `${branch?.name ?? "Unknown"} • ${
-                      selectedAssignment?.assignedMonth?.slice(0, 7) || "Unknown"
-                    }`
-                  : "Select a branch assignment"}
-              </div>
+            <div className="text-sm font-medium">
+              {selectedAssignment
+                ? `${branch?.name ?? "Unknown"} • ${
+                    selectedAssignment?.assignedMonth?.slice(0, 7) || "Unknown"
+                  }`
+                : "Select a branch assignment"}
             </div>
             <FinishButton
               disabled={!selectedAssignment}

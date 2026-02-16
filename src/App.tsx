@@ -17,7 +17,8 @@ import { Layout } from "./components/layout/layout";
 import ProductsList from "./pages/products/lists";
 import ProductsCreate from "./pages/products/create";
 import CategoriesList from "./pages/categories/lists";
-import StockCountPage from "./pages/stockcount";
+import StockCountPage from "./pages/stockcount/list";
+import StockCountEntryPage from "./pages/stockcount/stockcount-entry";
 import { dataProvider } from "./providers/data";
 import SuppliersList from "./pages/suppliers/lists";
 import BranchesList from "./pages/branches/lists";
@@ -51,6 +52,15 @@ function App() {
                   name: 'stockcount',
                   list: '/stockcount',
                   meta: { label: 'Stock Count', icon: <ChartBarStacked /> }
+                },
+                {
+                  name: "stockcount-entry",
+                  list: "/stockcount-entry",
+                  meta: {
+                    label: "Entry",
+                    parent: "stockcount",
+                    hide: true,
+                  },
                 },
                 {
                   name: 'products',
@@ -103,6 +113,10 @@ function App() {
 
                   <Route path="stockcount">
                     <Route index element={<StockCountPage />} />
+                  </Route>
+
+                  <Route path="stockcount-entry">
+                    <Route index element={<StockCountEntryPage />} />
                   </Route>
 
                   <Route path="products">

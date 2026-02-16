@@ -33,6 +33,7 @@ const options: CreateDataProviderOptions = {
           if (field === "name") params.search = value;
           if (field === "branchId") params.branchId = value;
           if (field === "assignedMonth") params.month = value;
+          if (field === "excludeAssignedMonth") params.excludeMonth = value;
         }
         })
         return params;
