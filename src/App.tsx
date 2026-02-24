@@ -1,9 +1,10 @@
-import { GitHubBanner, Refine, WelcomePage } from "@refinedev/core";
+import { Authenticated, GitHubBanner, Refine, WelcomePage } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import routerProvider, {
   DocumentTitleHandler,
+  NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
@@ -26,6 +27,7 @@ import BranchAssingment from "./pages/branchAssingment/lists";
 import TestPage from "./pages/Test";
 import UomList from "./pages/uom/lists";
 import NotFoundPage from "./pages/not-found";
+import Login from "./pages/login";
 
 function App() {
   return (
@@ -44,14 +46,14 @@ function App() {
               }}
               resources={[
                 {
-                  name: 'dashboard',
-                  list: '/',
-                  meta: { label: 'Home', icon: <Home /> }
+                  name: "dashboard",
+                  list: "/",
+                  meta: { label: "Home", icon: <Home /> },
                 },
                 {
-                  name: 'stockcount',
-                  list: '/stockcount',
-                  meta: { label: 'Stock Count', icon: <ChartBarStacked /> }
+                  name: "stockcount",
+                  list: "/stockcount",
+                  meta: { label: "Stock Count", icon: <ChartBarStacked /> },
                 },
                 {
                   name: "stockcount-entry",
@@ -63,52 +65,56 @@ function App() {
                   },
                 },
                 {
-                  name: 'products',
-                  list: '/products',
-                  create: '/products/create',
-                  meta: { label: 'Products', icon: <Box />}
+                  name: "products",
+                  list: "/products",
+                  create: "/products/create",
+                  meta: { label: "Products", icon: <Box /> },
                 },
                 {
-                  name: 'categories',
-                  list: '/categories',
-                  meta: { label: 'Categories', icon: <ChartBarStacked />}
+                  name: "categories",
+                  list: "/categories",
+                  meta: { label: "Categories", icon: <ChartBarStacked /> },
                 },
                 {
-                  name: 'suppliers',
-                  list: '/suppliers',
-                  meta: { label: 'Suppliers', icon: <Truck />}
+                  name: "suppliers",
+                  list: "/suppliers",
+                  meta: { label: "Suppliers", icon: <Truck /> },
                 },
                 {
-                  name: 'branches',
-                  list: '/branches',
-                  meta: { label: 'Branches', icon: <Warehouse />}
+                  name: "branches",
+                  list: "/branches",
+                  meta: { label: "Branches", icon: <Warehouse /> },
                 },
                 {
-                  name: 'branchAssingment',
-                  list: '/branchAssingment',
-                  meta: { label: 'Branch Assingments', icon: <Warehouse />}
+                  name: "branchAssingment",
+                  list: "/branchAssingment",
+                  meta: { label: "Branch Assingments", icon: <Warehouse /> },
                 },
                 {
-                  name: 'uom',
-                  list: '/uom',
-                  meta: { label: 'UOM', icon: <Ruler /> }
+                  name: "uom",
+                  list: "/uom",
+                  meta: { label: "UOM", icon: <Ruler /> },
                 },
                 {
-                  name: 'test',
-                  list: '/test',
-                  meta: { label: 'Test', icon: <Table /> }
+                  name: "test",
+                  list: "/test",
+                  meta: { label: "Test", icon: <Table /> },
                 },
-            
-                
               ]}
             >
-
               <Routes>
-                <Route element = {
-                  <Layout>
-                    <Outlet />
-                  </Layout>
-                  }>
+                
+                  <Route path="/login" element={<Login />} />
+                 
+                
+                <Route
+                  element={
+                    <Layout>
+                      <Outlet />
+                    </Layout>
+                  }
+                >
+                  <Route path="/login" element={<Login />} />
                   <Route path="/" element={<Dashboard />} />
 
                   <Route path="stockcount">
@@ -122,7 +128,6 @@ function App() {
                   <Route path="products">
                     <Route index element={<ProductsList />} />
                     <Route path="create" element={<ProductsCreate />} />
-                    
                   </Route>
                   <Route path="categories">
                     <Route index element={<CategoriesList />} />
@@ -131,7 +136,7 @@ function App() {
                   <Route path="suppliers">
                     <Route index element={<SuppliersList />} />
                   </Route>
-                  
+
                   <Route path="branches">
                     <Route index element={<BranchesList />} />
                   </Route>
@@ -145,8 +150,7 @@ function App() {
                     <Route index element={<TestPage />} />
                   </Route>
                   <Route path="*" element={<NotFoundPage />} />
-                  
-                </Route>  
+                </Route>
               </Routes>
 
               <Toaster />
