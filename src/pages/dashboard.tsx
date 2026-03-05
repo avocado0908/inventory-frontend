@@ -395,44 +395,46 @@ export default function DashboardPage() {
 
   return (
     <DashboardErrorBoundary>
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Monthly Stocktake Overview</h1>
-        <p className="text-sm text-muted-foreground">
-          Quick snapshot of stock value, risk, and progress for the month.
-        </p>
-        <div className="mt-4 w-48">
-          <Input
-            type="month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
+      <div className="space-y-6 p-6">
+        <div>
+          <h1 className="text-2xl font-semibold">Monthly Stocktake Overview</h1>
+          <p className="text-sm text-muted-foreground">
+            Quick snapshot of stock value, risk, and progress for the month.
+          </p>
+          <div className="mt-4 w-48">
+            <Input
+              type="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <KpiCards items={kpis} />
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <MonthlyStockComparison data={monthlyComparisonData} />
+          </div>
+          <BranchValueRank
+            data={branchRankData}
+            formatCurrency={formatCurrency}
           />
         </div>
-      </div>
 
-      <KpiCards items={kpis} />
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <MonthlyStockComparison data={monthlyComparisonData} />
-        </div>
-        <BranchValueRank data={branchRankData} formatCurrency={formatCurrency} />
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-3">
+        {/* <div className="grid gap-6 lg:grid-cols-3">
         <StockByLocationChart data={stockByLocation} />
         <StockByCategoryChart data={stockByCategory} />
         <AlertsPanel items={alerts} />
-      </div>
+      </div> */}
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <StocktakeProgressTable rows={progressRows} />
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <StocktakeProgressTable rows={progressRows} />
+          </div>
+          {/* <TransfersSummary /> */}
         </div>
-        <TransfersSummary />
       </div>
-
-    </div>
     </DashboardErrorBoundary>
   );
 }
